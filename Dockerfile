@@ -2,8 +2,9 @@
 FROM eclipse-temurin:21 AS builder
 WORKDIR /app
 COPY pom.xml .
+RUN mvn dependency:go-offline -q
 COPY src ./src
-RUN apt-get update && apt-get install -y maven && mvn -B package -DskipTests
+RUN mvn clean package -DskipTests -q
 
 # Execute the docker
 FROM eclipse-temurin:21-jre-alpine
