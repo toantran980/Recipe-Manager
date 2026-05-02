@@ -32,9 +32,9 @@ public class RecipeController {
     }
 
     // READ ONE endpoint
-    // GET /api/recipe/{id}
+    // GET /api/recipes/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Recipe> getOneRecipe(@PathVariable String recipeId) {
+    public ResponseEntity<Recipe> getOneRecipe(@PathVariable("id") String recipeId) {
         Recipe recipe = recipeService.getOneRecipe(recipeId);
         return ResponseEntity.ok(recipe);   // 200 OK
     }
@@ -43,7 +43,7 @@ public class RecipeController {
     // PUT /api/recipes/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Recipe> updateRecipe(
-            @PathVariable String recipeId,
+            @PathVariable("id") String recipeId,
             @RequestBody Recipe recipe) {
         Recipe updatedRecipe = recipeService.updateRecipe(recipeId, recipe);
         return ResponseEntity.ok(updatedRecipe);    // 200 OK
@@ -52,7 +52,7 @@ public class RecipeController {
     // DELETE endpoint
     // DELETE /api/recipes/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecipe(@PathVariable String recipeId) {
+    public ResponseEntity<Void> deleteRecipe(@PathVariable("id") String recipeId) {
         boolean deletedStatus = recipeService.deleteRecipe(recipeId);
         if (deletedStatus) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 NO CONTENT

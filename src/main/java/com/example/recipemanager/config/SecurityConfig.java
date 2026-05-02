@@ -32,6 +32,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/recipes/**").permitAll()
+
+                        // testing purposes only
+                        // shows error message instead of "Unauthorized"
+                        .requestMatchers("/error").permitAll()
+
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/recipes/**").hasRole("USER")
                         .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/recipes/**").hasRole("USER")
                         .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/recipes/**").hasRole("USER")

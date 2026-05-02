@@ -3,7 +3,6 @@ package com.example.recipemanager.controller;
 import com.example.recipemanager.service.AuthService;
 import com.example.recipemanager.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +26,10 @@ public class AuthController {
 
     // POST /api/auth/login
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestParam String email, @RequestParam String password) {
-        return ResponseEntity.ok(authService.login(email, password));
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(authService.login(loginRequest.email(), loginRequest.password()));
     }
 
+    public record LoginRequest(String email, String password) {}
     public record TokenResponse(String token) {}
 }
