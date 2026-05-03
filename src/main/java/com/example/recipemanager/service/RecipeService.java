@@ -17,21 +17,21 @@ public class RecipeService {
         return recipeRepo.save(recipe);
     }
 
-    // READ ALL | gets all recipes
-    public List<Recipe> getAllRecipes() {
-        return recipeRepo.findAll();
+    // READ ALL | gets all recipes, for that user
+    public List<Recipe> getAllRecipes(String userId) {
+        return recipeRepo.findByUserId(userId);
     }
 
-    // READ ONE | gets one recipe
-    public Recipe getOneRecipe(String recipeId) {
-        return recipeRepo.findById(recipeId)
-                // 404, IF NOT FOUND
-                .orElseThrow(() -> new RuntimeException("Recipe not found: " + recipeId));
+    // READ ONE | gets one recipe, if it belongs to the user
+    public Recipe getOneRecipe(String recipeId, String userId) {
+        return recipeRepo.findByIdAndUserId(recipeId, userId)
+                // 404, IF NOT FOUND or NOT OWNED BY USER
+                .orElseThrow(() -> new RuntimeException("Recipe not found or unauthorized: " + recipeId));
     }
 
-    // UPDATE | updates a recipe
-    public Recipe updateRecipe(String recipeId, Recipe recipe) {
-        Recipe currentRecipe = getOneRecipe(recipeId);  // 404, IF NOT FOUND
+    // UPDATE | updates a recipe, if it belongs to the user
+    public Recipe updateRecipe(String recipeId, String userId, Recipe recipe) {
+        Recipe currentRecipe = getOneRecipe(recipeId, userId);  // 404 Unauthorized, IF NOT FOUND
 
         currentRecipe.setTitle(recipe.getTitle());
         currentRecipe.setDescription(recipe.getDescription());
@@ -42,12 +42,12 @@ public class RecipeService {
         return recipeRepo.save(currentRecipe);
     }
 
-    // DELETE | deletes a recipe
-    public boolean deleteRecipe(String recipeId) {
-        if (recipeRepo.existsById(recipeId)) {
-            recipeRepo.deleteById(recipeId);
-            return true;
-        }
-        return false;
+    // DELETE | deletes a recipe, if it belongs to the user
+    public boolean deleteRecipe(String recipeId, String userId) {
+        return recipeRepo.findByIdAndUserId(recipeId, userId)
+                .map(recipe -> {
+                    recipeRepo.delete(recipe);
+                    return true;
+                }).orElse(false);
     }
 }

@@ -8,6 +8,12 @@ services:
       - mongo-data:/data/db
     environment:
       MONGO_INITDB_DATABASE: recipe
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping').ok", "--quiet" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     restart: unless-stopped
 
   app:
@@ -17,7 +23,8 @@ services:
     environment:
       SPRING_DATA_MONGODB_URI: mongodb://host.docker.internal:27017/recipe
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
 
 volumes:
     mongo-data:
