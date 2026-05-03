@@ -1,9 +1,12 @@
 package com.example.recipemanager.service;
 
 import com.example.recipemanager.entity.Recipe;
+import com.example.recipemanager.exception.ForbiddenException;
+import com.example.recipemanager.exception.ResourceNotFoundException;
 import com.example.recipemanager.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -14,6 +17,9 @@ public class RecipeService {
 
     // CREATE | creates recipe
     public Recipe createRecipe(Recipe recipe) {
+        if (!StringUtils.hasText(recipe.getTitle())) {
+            throw new IllegalArgumentException("Recipe title is required");
+        }
         return recipeRepo.save(recipe);
     }
 
@@ -24,14 +30,23 @@ public class RecipeService {
 
     // READ ONE | gets one recipe, if it belongs to the user
     public Recipe getOneRecipe(String recipeId, String userId) {
-        return recipeRepo.findByIdAndUserId(recipeId, userId)
-                // 404, IF NOT FOUND or NOT OWNED BY USER
-                .orElseThrow(() -> new RuntimeException("Recipe not found or unauthorized: " + recipeId));
+        Recipe recipe = recipeRepo.findById(recipeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Recipe with id " + recipeId + " not found"));
+
+        if (!recipe.getUserId().equals(userId)) {
+            throw new ForbiddenException("You do not have permission to access this recipe");
+        }
+
+        return recipe;
     }
 
     // UPDATE | updates a recipe, if it belongs to the user
     public Recipe updateRecipe(String recipeId, String userId, Recipe recipe) {
-        Recipe currentRecipe = getOneRecipe(recipeId, userId);  // 404 Unauthorized, IF NOT FOUND
+        Recipe currentRecipe = getOneRecipe(recipeId, userId);
+
+        if (!StringUtils.hasText(recipe.getTitle())) {
+            throw new IllegalArgumentException("Recipe title is required");
+        }
 
         currentRecipe.setTitle(recipe.getTitle());
         currentRecipe.setDescription(recipe.getDescription());
@@ -43,11 +58,8 @@ public class RecipeService {
     }
 
     // DELETE | deletes a recipe, if it belongs to the user
-    public boolean deleteRecipe(String recipeId, String userId) {
-        return recipeRepo.findByIdAndUserId(recipeId, userId)
-                .map(recipe -> {
-                    recipeRepo.delete(recipe);
-                    return true;
-                }).orElse(false);
+    public void deleteRecipe(String recipeId, String userId) {
+        Recipe recipe = getOneRecipe(recipeId, userId);
+        recipeRepo.delete(recipe);
     }
 }

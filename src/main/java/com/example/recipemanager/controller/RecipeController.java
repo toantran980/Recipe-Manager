@@ -54,7 +54,7 @@ public class RecipeController {
             @RequestBody Recipe recipe,
             @AuthenticationPrincipal AuthUser authUser) {
         Recipe updatedRecipe = recipeService.updateRecipe(recipeId, authUser.getUserId(), recipe);
-        return ResponseEntity.ok(updatedRecipe);   // 200 OK
+        return ResponseEntity.ok(updatedRecipe);    // 200 OK
     }
 
     // DELETE endpoint - Checks for user ownership
@@ -63,10 +63,7 @@ public class RecipeController {
     public ResponseEntity<Void> deleteRecipe(
             @PathVariable("id") String recipeId,
             @AuthenticationPrincipal AuthUser authUser) {
-        boolean deletedStatus = recipeService.deleteRecipe(recipeId, authUser.getUserId());
-        if (deletedStatus) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 NO CONTENT
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // 404 NOT FOUND
+        recipeService.deleteRecipe(recipeId, authUser.getUserId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 NO CONTENT
     }
 }
