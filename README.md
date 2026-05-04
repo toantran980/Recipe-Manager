@@ -1,17 +1,24 @@
 # Recipe Manager System
-### Team Members
-- James Nguyen: 806134391
-- Toan Tran: 881738009
+
+### About the Project
+This is a backend API for a recipe management system that lets users securely create and manage their own digital recipe collections.\
+It handles secure user accounts with JWT authentication and is fully containerized with Docker for easy setup and deployment.
+
+## Team Members
+| Name | # |
+| :--- | :--- |
+| James Nguyen | 806134391 |
+| Toan Tran | 881738009 |
 
 ## Video Demo
-- Link review video: [Google Drive]() <- TO BE ADDED SOON
+- Demo Walkthrough (with Steps): [YouTube](https://youtu.be/0v1tobeRqmM)
 
 ## Instructions
 - Ensure that both Docker Desktop and Postman are downloaded and running, at the same time.
 - Either git clone OR download the zip file from this repo, and then unzip the project folder.
 - Navigate to the project folder AND open Windows PowerShell within the folder.
 - In Powershell, run the following command:\
-• docker compose up --build
+• docker compose up --d
 - In Postman, follow the API requests listed below, in exact order, to demo the full experience.
 - For each API Request (*listed below*), the 3rd bullet point contains the JSON body, which you can plug into the "Body" tab on Postman.
 
@@ -141,3 +148,15 @@
 • Lemon Herb Roasted Chicken recipe is no longer present\
 • Only the updated Caprese Salad recipe remains (after Step 11)
 <img width="697" height="573" alt="Screenshot 2026-05-03 030723" src="https://github.com/user-attachments/assets/615c82e9-ab0e-4b36-8f58-d96d213c0d1b" />
+
+## Tech Stack
+| Tech | Details |
+| :--- | :--- |
+| Language | Java 21 |
+| Framework | Spring Boot 4.0.5 |
+| Build Tool | Maven |
+| Database | MongoDB (via Spring Data MongoDB) |
+| Security | Spring Security + JWT (JSON Web Tokens) |
+| Containerization | Docker Desktop |
+| API Testing | Postman |
+| Utilities | Lombok |
