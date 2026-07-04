@@ -1,8 +1,18 @@
 # Recipe Manager System
 
+![Java CI](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml/badge.svg)
+![Java](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen)
+
 ### About the Project
-This is a backend API for a recipe management system that lets users securely create and manage their own digital recipe collections.\
+This is a backend API for a recipe management system that lets users securely create and manage their own digital recipe collections.
 It handles secure user accounts with JWT authentication and is fully containerized with Docker for easy setup and deployment.
+
+## Live Demo
+- Deploy this app on Render or Railway from GitHub in minutes.
+- A ready-to-use Render config file is included in this repository as [render.yaml](render.yaml).
+- Replace the placeholder URL with your own deployed app link and add it to your LinkedIn profile and resume to showcase a live project.
+- Keep secrets such as JWT_SECRET and database credentials in the platform's environment variables panel instead of storing them in the repository.
 
 ## Team Members
 | Name | # |
@@ -160,3 +170,8 @@ It handles secure user accounts with JWT authentication and is fully containeriz
 | Containerization | Docker Desktop |
 | API Testing | Postman |
 | Utilities | Lombok |
+
+## Quality & CI/CD
+- Automated test execution runs on every push and pull request through GitHub Actions.
+- Service-layer tests cover authentication and recipe business logic.
+- This setup is ready to be connected to Render or Railway for continuous deployment.
