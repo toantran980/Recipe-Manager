@@ -32,6 +32,9 @@ public class Recipe {
     @Field
     private String userId; // always from JWT, not in request body
 
+    @Field
+    private String imageUrl;
+
     public String getId() {
         return id;
     }
@@ -86,5 +89,13 @@ public class Recipe {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
