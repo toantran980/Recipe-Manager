@@ -8,6 +8,13 @@
 
 This project is a secure backend API for managing personal recipe collections. Users can register, sign in with JWT authentication, create recipes, filter and paginate them, and upload images for each recipe.
 
+## Team Members
+
+| Name         | #         |
+| :----------- | :-------- |
+| James Nguyen | 806134391 |
+| Toan Tran    | 881738009 |
+
 ## Features
 
 - User registration and login with JWT-based authentication
@@ -206,10 +213,3 @@ A short walkthrough of the project is available here:
 - Automated test execution runs on every push and pull request through GitHub Actions.
 - Service-layer and controller tests cover authentication, recipe business logic, and request validation.
 - This setup is ready to be connected to Render or Railway for continuous deployment.
-
-## Team Members
-
-| Name         | #         |
-| :----------- | :-------- |
-| James Nguyen | 806134391 |
-| Toan Tran    | 881738009 |
