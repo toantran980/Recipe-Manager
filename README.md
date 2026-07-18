@@ -1,7 +1,7 @@
 # Recipe Manager System
 
 ![Java CI](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml/badge.svg)
-![Java](https://img.shields.io/badge/Java-21-blue)
+![Java](https://img.shields.io/badge/Java-25-blue)
 ![Spring Boot](<https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen>)
 
 ## Overview
