@@ -2,19 +2,19 @@ package com.example.recipemanager.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
 public class JwtService {
 
-    @Value("${jwt.secret:${JWT_SECRET:change-me-placeholder-32-chars-minimum-secret}}")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.expiration-ms:${JWT_EXPIRATION_MS:86400000}}")
@@ -24,7 +24,13 @@ public class JwtService {
 
     @PostConstruct
     void init() {
-        this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+        if (jwtSecret == null || jwtSecret.isBlank()) {
+            throw new IllegalStateException(
+                "jwt.secret is not configured. Set it in application.properties " +
+                "or via the JWT_SECRET environment variable (Base64-encoded 256-bit key)."
+            );
+        }
+        this.signingKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
     public String generateToken(String userId, String email) {

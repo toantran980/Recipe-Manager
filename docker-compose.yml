@@ -20,11 +20,11 @@ services:
     build: .
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATA_MONGODB_URI: mongodb://host.docker.internal:27017/recipe
+    env_file:
+      - .env
     depends_on:
       mongodb:
         condition: service_healthy
 
 volumes:
-    mongo-data:
+  mongo-data:
