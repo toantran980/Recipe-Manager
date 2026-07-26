@@ -7,7 +7,11 @@ services:
     envVars:
       - key: PORT
         value: 8080
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      # Set SPRING_DATA_MONGODB_URI in Render dashboard to your MongoDB Atlas URI
       - key: SPRING_DATA_MONGODB_URI
-        value: mongodb://localhost:27017/recipe
+        sync: false
+      # Set JWT_SECRET in Render dashboard manually using the same value from your .env file
       - key: JWT_SECRET
-        generateValue: true
+        sync: false

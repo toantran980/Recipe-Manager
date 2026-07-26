@@ -1,28 +1,26 @@
-name: Java CI
-
+name: CI —Run Tests and Build Docker Image
 on:
   push:
-    branches: [ main ]
+    branches: [ main ] # run when you push to main
   pull_request:
-    branches: [ main ]
-
+    branches: [ main ] # run on every pull request
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
+  test-and-build:
+    runs-on: ubuntu-latest # GitHub provides a fresh VM
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v5
-
-      - name: Set up JDK 25
-        uses: actions/setup-java@v5
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: '25'
-          cache: maven
-
-      - name: Make Maven Wrapper executable
-        run: chmod +x ./mvnw
-
-      - name: Run tests
-        run: ./mvnw test
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Cache Maven dependencies # speeds up builds
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      - name: Run all tests # YOUR tests run here
+        run: mvn --batch-mode clean test
+      - name: Build Docker image # only runs if tests pass
+        run: docker build -t recipe-api:${{ github.sha }}

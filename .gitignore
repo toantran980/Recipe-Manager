@@ -58,6 +58,8 @@ build/
 
 ### VS Code ###
 .vscode/
-resources/application.properties
 
 .env
+
+# Never commit production secrets
+application-prod.properties
