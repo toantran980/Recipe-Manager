@@ -1,4 +1,4 @@
-name: CI —Run Tests and Build Docker Image
+name: CI — Run Tests and Build Docker Image
 on:
   push:
     branches: [ main ] # run when you push to main
@@ -23,4 +23,4 @@ jobs:
       - name: Run all tests # YOUR tests run here
         run: mvn --batch-mode clean test
       - name: Build Docker image # only runs if tests pass
-        run: docker build -t recipe-api:${{ github.sha }}
+        run: docker build -t recipe-api:${{ github.sha }} .
