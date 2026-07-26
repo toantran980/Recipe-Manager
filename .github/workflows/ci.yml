@@ -20,9 +20,7 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-      - name: Run all tests
+      - name: Run all tests # YOUR tests run here
         run: mvn --batch-mode clean test
-      - name: Build JAR
-        run: mvn --batch-mode package -DskipTests
-      - name: Build Docker image
+      - name: Build Docker image # only runs if tests pass
         run: docker build -t recipe-api:${{ github.sha }} .
