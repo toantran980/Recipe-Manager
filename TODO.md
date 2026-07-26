@@ -1,4 +1,4 @@
-# Deployment & Config Restructure Todo
+
 
 - [X] Plan confirmed
 - [X] Step 1: Restructure application.properties (remove spring.profiles.active, add Actuator config)
