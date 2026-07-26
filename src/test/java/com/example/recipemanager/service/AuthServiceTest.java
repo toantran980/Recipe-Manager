@@ -5,6 +5,9 @@ import com.example.recipemanager.entity.User;
 import com.example.recipemanager.exception.EmailAlreadyExistsException;
 import com.example.recipemanager.repository.UserRepository;
 import com.example.recipemanager.security.JwtService;
+import com.example.recipemanager.security.RateLimitFilter;
+import com.example.recipemanager.security.TokenBlacklistService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +20,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,8 +36,16 @@ class AuthServiceTest {
     @Mock
     private JwtService jwtService;
 
+    @Mock
+    private RateLimitFilter rateLimitFilter;
+
+    @Mock
+    private TokenBlacklistService tokenBlacklistService;
+
     @InjectMocks
     private AuthService authService;
+
+    private final HttpServletRequest request = mock(HttpServletRequest.class);
 
     @Test
     void registerReturnsTokenWhenUserIsValid() {
@@ -80,7 +92,7 @@ class AuthServiceTest {
         when(passwordEncoder.matches("secret", "encoded-secret")).thenReturn(true);
         when(jwtService.generateToken("user-1", "tester@example.com")).thenReturn("jwt-token");
 
-        TokenResponse response = authService.login("tester@example.com", "secret");
+        TokenResponse response = authService.login("tester@example.com", "secret", request);
 
         assertEquals("jwt-token", response.token());
     }
@@ -94,6 +106,6 @@ class AuthServiceTest {
         when(userRepository.findByEmail("tester@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrong", "encoded-secret")).thenReturn(false);
 
-        assertThrows(BadCredentialsException.class, () -> authService.login("tester@example.com", "wrong"));
+        assertThrows(BadCredentialsException.class, () -> authService.login("tester@example.com", "wrong", request));
     }
 }

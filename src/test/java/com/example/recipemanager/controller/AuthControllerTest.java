@@ -3,6 +3,7 @@ package com.example.recipemanager.controller;
 import com.example.recipemanager.dto.LoginRequest;
 import com.example.recipemanager.dto.RegisterRequest;
 import com.example.recipemanager.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,11 +41,12 @@ class AuthControllerTest {
 
     @Test
     void loginReturnsOkStatusForValidPayload() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
         AuthController.TokenResponse response = new AuthController.TokenResponse("token");
-        when(authService.login("alice@example.com", "password123")).thenReturn(response);
+        when(authService.login("alice@example.com", "password123", request)).thenReturn(response);
 
         ResponseEntity<AuthController.TokenResponse> result = authController.login(
-                new LoginRequest("alice@example.com", "password123")
+                new LoginRequest("alice@example.com", "password123"), request
         );
 
         assertEquals(HttpStatus.OK, result.getStatusCode());

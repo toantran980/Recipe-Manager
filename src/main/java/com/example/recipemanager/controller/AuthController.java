@@ -6,6 +6,7 @@ import com.example.recipemanager.entity.User;
 import com.example.recipemanager.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication", description = "Register and login endpoints")
+@Tag(name = "Authentication", description = "Register, login, and logout endpoints")
 public class AuthController {
     @Autowired
     private AuthService authService;
@@ -38,8 +39,20 @@ public class AuthController {
     // POST /api/auth/login
     @Operation(summary = "Log in an existing user")
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest.email(), loginRequest.password()));
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        return ResponseEntity.ok(authService.login(loginRequest.email(), loginRequest.password(), request));
+    }
+
+    // POST /api/auth/logout
+    @Operation(summary = "Log out and invalidate the current token")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            authService.logout(token);
+        }
+        return ResponseEntity.noContent().build();
     }
 
     public record TokenResponse(String token) {}

@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,19 +18,27 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@Order(100)
 public class JwtAuthFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         String token = extractToken(request);
 
         if (StringUtils.hasText(token)
                 && SecurityContextHolder.getContext().getAuthentication() == null
-                && jwtService.isValidToken(token)) {
+                && jwtService.isValidToken(token)
+                && !tokenBlacklistService.isBlacklisted(token)) {
+
             String userId = jwtService.extractUserId(token);
             String email = jwtService.extractEmail(token);
             AuthUser principal = new AuthUser(userId, email);

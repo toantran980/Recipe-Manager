@@ -5,6 +5,8 @@ import com.example.recipemanager.exception.ForbiddenException;
 import com.example.recipemanager.exception.ResourceNotFoundException;
 import com.example.recipemanager.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +24,7 @@ public class RecipeService {
     private RecipeRepository recipeRepo;
 
     // CREATE | creates recipe
+    @CacheEvict(value = "recipes", allEntries = true)
     public Recipe createRecipe(Recipe recipe) {
         if (!StringUtils.hasText(recipe.getTitle())) {
             throw new IllegalArgumentException("Recipe title is required");
@@ -37,6 +40,7 @@ public class RecipeService {
         return getAllRecipes(userId, null, null, null, null, 0, 20);
     }
 
+    @Cacheable(value = "recipes", key = "#userId + ':' + (#search != null ? #search : '') + ':' + (#category != null ? #category : '')")
     public List<Recipe> getAllRecipes(String userId, String search, String category, Integer maxPrepTime, String ingredient, Integer page, Integer size) {
         List<Recipe> recipes = recipeRepo.findByUserId(userId).stream()
                 .filter(recipe -> {
@@ -67,6 +71,7 @@ public class RecipeService {
     }
 
     // READ ONE | gets one recipe, if it belongs to the user
+    @Cacheable(value = "recipes", key = "#recipeId")
     public Recipe getOneRecipe(String recipeId, String userId) {
         Recipe recipe = recipeRepo.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe with id " + recipeId + " not found"));
@@ -79,6 +84,7 @@ public class RecipeService {
     }
 
     // UPDATE | updates a recipe, if it belongs to the user
+    @CacheEvict(value = "recipes", allEntries = true)
     public Recipe updateRecipe(String recipeId, String userId, Recipe recipe) {
         Recipe currentRecipe = getOneRecipe(recipeId, userId);
 
@@ -99,11 +105,13 @@ public class RecipeService {
     }
 
     // DELETE | deletes a recipe, if it belongs to the user
+    @CacheEvict(value = "recipes", allEntries = true)
     public void deleteRecipe(String recipeId, String userId) {
         Recipe recipe = getOneRecipe(recipeId, userId);
         recipeRepo.delete(recipe);
     }
 
+    @CacheEvict(value = "recipes", allEntries = true)
     public Recipe uploadRecipeImage(String recipeId, String userId, MultipartFile file) {
         Recipe recipe = getOneRecipe(recipeId, userId);
 

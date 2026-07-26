@@ -15,3 +15,8 @@ services:
       # Set JWT_SECRET in Render dashboard manually using the same value from your .env file
       - key: JWT_SECRET
         sync: false
+      # Set REDIS_HOST in Render dashboard to your Redis instance URL
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PORT
+        value: 6379

@@ -59,6 +59,7 @@ public class LatencyBenchmark {
         );
     }
 
+    @SuppressWarnings("java:S125")
     public static void main(String[] args) throws Exception {
         String baseUrl = args.length > 0 ? args[0] : "http://localhost:8080";
         int iterations = args.length > 1 ? Integer.parseInt(args[1]) : 10;
@@ -152,7 +153,7 @@ public class LatencyBenchmark {
             boolean hitTarget = change <= -40;
             if (!hitTarget) allHitTarget = false;
 
-            String symbol = hitTarget ? "✓" : (change < 0 ? "~" : "✗");
+            String symbol = hitTarget ? "\u2713" : (change < 0 ? "~" : "\u2717");
             String color;
             if (hitTarget) {
                 color = "\u001B[32m"; // green
@@ -164,14 +165,14 @@ public class LatencyBenchmark {
 
             System.out.printf("%-30s %10d %10d %s%+.1f%% %s %s%n",
                     b.name, b.avgMs, a.avgMs, color, change, symbol,
-                    hitTarget ? "\u001B[32m✓ HIT\u001B[0m" : "\u001B[31mMISS\u001B[0m");
+                    hitTarget ? "\u001B[32m\u2713 HIT\u001B[0m" : "\u001B[31mMISS\u001B[0m");
         }
 
         System.out.println("-".repeat(75));
         if (allHitTarget) {
-            System.out.println("\u001B[32m  ✓ 40% LATENCY TARGET ACHIEVED on ALL endpoints!\u001B[0m");
+            System.out.println("\u001B[32m  \u2713 40% LATENCY TARGET ACHIEVED on ALL endpoints!\u001B[0m");
         } else {
-            System.out.println("\u001B[31m  ⚠ 40% LATENCY TARGET NOT YET ACHIEVED on all endpoints\u001B[0m");
+            System.out.println("\u001B[31m  \u26A0 40% LATENCY TARGET NOT YET ACHIEVED on all endpoints\u001B[0m");
             System.out.println("\u001B[33m  Some endpoints still need improvement. Review the MISS entries above.\u001B[0m");
         }
         System.out.println("============================================\u001B[0m");
@@ -270,7 +271,7 @@ public class LatencyBenchmark {
                 }
 
                 long start = System.nanoTime();
-                HttpResponse<String> resp = CLIENT.send(builder.build(), HttpResponse.BodyHandlers.ofString());
+                CLIENT.send(builder.build(), HttpResponse.BodyHandlers.ofString());
                 long elapsed = System.nanoTime() - start;
                 latencies.add(elapsed / 1_000_000);
             } catch (Exception e) {
@@ -330,4 +331,3 @@ public class LatencyBenchmark {
             int samples
     ) {}
 }
-
