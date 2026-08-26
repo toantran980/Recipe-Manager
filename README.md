@@ -12,7 +12,7 @@ This project is a secure backend API for managing personal recipe collections. U
 
 
 
-## 👥 Contributions & Project History
+## Contributions & Project History
 **Original College Project:**
 - James Nguyen   806134391 
 - Toan Tran    881738009 
