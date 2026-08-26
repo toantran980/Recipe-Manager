@@ -16,7 +16,8 @@ This project is a secure backend API for managing personal recipe collections. U
 **Original College Project:**
 James Nguyen   806134391 
 Toan Tran    881738009 
-* **Solo Updates (Post-Graduation):** All commits and updates after May 15, 2026 were completed independently by me for skill development.
+
+**Solo Updates (Post-Graduation):** All commits and updates after May 15, 2026 were completed independently by me for skill development.
 
 ## Features
 
