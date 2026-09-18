@@ -3,9 +3,6 @@ services:
     name: recipe-manager-db
     runtime: postgresql
     plan: free
-    postgresMajorVersion: 16
-    databaseName: recipe
-    user: recipe_user
 
   - type: web
     name: recipe-manager
