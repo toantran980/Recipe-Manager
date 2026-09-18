@@ -28,7 +28,7 @@ class RecipeControllerTest {
     @Test
     void createRecipeReturnsCreatedStatusForValidPayload() {
         Recipe recipe = new Recipe();
-        recipe.setId("recipe-1");
+        recipe.setId(1L);
         recipe.setTitle("Soup");
         recipe.setDescription("A test recipe");
         recipe.setIngredients(List.of("salt"));
@@ -39,7 +39,7 @@ class RecipeControllerTest {
 
         ResponseEntity<Recipe> response = recipeController.createRecipe(
                 new com.example.recipemanager.dto.RecipeRequest("Soup", "A test recipe", List.of("salt"), 10, "Dinner"),
-                new com.example.recipemanager.security.AuthUser("user-1", "test@example.com")
+                new com.example.recipemanager.security.AuthUser(1L, "test@example.com")
         );
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());

@@ -62,7 +62,7 @@ public class RecipeController {
     @Operation(summary = "Fetch one recipe by id")
     @GetMapping("/{id}")
     public ResponseEntity<Recipe> getOneRecipe(
-            @PathVariable("id") String recipeId,
+            @PathVariable("id") Long recipeId,
             @AuthenticationPrincipal AuthUser authUser) {
         Recipe recipe = recipeService.getOneRecipe(recipeId, authUser.getUserId());
         return ResponseEntity.ok(recipe);   // 200 OK
@@ -73,7 +73,7 @@ public class RecipeController {
     @Operation(summary = "Update an existing recipe")
     @PutMapping("/{id}")
     public ResponseEntity<Recipe> updateRecipe(
-            @PathVariable("id") String recipeId,
+            @PathVariable("id") Long recipeId,
             @Valid @RequestBody RecipeRequest request,
             @AuthenticationPrincipal AuthUser authUser) {
         Recipe recipe = new Recipe();
@@ -91,7 +91,7 @@ public class RecipeController {
     @Operation(summary = "Delete a recipe")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRecipe(
-            @PathVariable("id") String recipeId,
+            @PathVariable("id") Long recipeId,
             @AuthenticationPrincipal AuthUser authUser) {
         recipeService.deleteRecipe(recipeId, authUser.getUserId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 NO CONTENT
@@ -100,7 +100,7 @@ public class RecipeController {
     @Operation(summary = "Upload an image for a recipe")
     @PostMapping("/{id}/image")
     public ResponseEntity<Recipe> uploadRecipeImage(
-            @PathVariable("id") String recipeId,
+            @PathVariable("id") Long recipeId,
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal AuthUser authUser) {
         Recipe updatedRecipe = recipeService.uploadRecipeImage(recipeId, authUser.getUserId(), file);

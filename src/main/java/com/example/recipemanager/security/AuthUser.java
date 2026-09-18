@@ -2,15 +2,15 @@ package com.example.recipemanager.security;
 
 public class AuthUser {
 
-    private final String userId;
+    private final Long userId;
     private final String email;
 
-    public AuthUser(String userId, String email) {
+    public AuthUser(Long userId, String email) {
         this.userId = userId;
         this.email = email;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 

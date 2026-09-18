@@ -39,9 +39,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 && jwtService.isValidToken(token)
                 && !tokenBlacklistService.isBlacklisted(token)) {
 
-            String userId = jwtService.extractUserId(token);
+            String userId = jwtService.extractUserId(token).toString();
             String email = jwtService.extractEmail(token);
-            AuthUser principal = new AuthUser(userId, email);
+            AuthUser principal = new AuthUser(jwtService.extractUserId(token), email);
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     principal,

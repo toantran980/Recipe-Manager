@@ -1,45 +1,43 @@
 package com.example.recipemanager.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "recipes")
+@Entity
+@Table(name = "recipes")
 @Data
 public class Recipe {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Field
+    @Column(nullable = false)
     private String title;
 
-    @Field
     private String description;
 
-    @Field
+    @ElementCollection
+    @CollectionTable(name = "recipe_ingredients", joinColumns = @JoinColumn(name = "recipe_id"))
+    @Column(name = "ingredient")
     private List<String> ingredients = new ArrayList<>();
 
-    @Field
     private int prepTime;
 
-    @Field
     private String category;
 
-    @Field
-    private String userId; // always from JWT, not in request body
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
-    @Field
     private String imageUrl;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -83,11 +81,11 @@ public class Recipe {
         this.category = category;
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

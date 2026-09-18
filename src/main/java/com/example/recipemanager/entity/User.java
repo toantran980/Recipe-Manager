@@ -1,37 +1,37 @@
 package com.example.recipemanager.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 
-@Document(collection = "users")
+@Entity
+@Table(name = "users")
 @Data
 public class User {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Field
-    @Indexed(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @Field
+    @Column(nullable = false)
     private String password;
 
-    @Field
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Field
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
     private List<String> roles;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

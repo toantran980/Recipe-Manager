@@ -1,23 +1,23 @@
 package com.example.recipemanager.repository;
 
 import com.example.recipemanager.entity.Recipe;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface RecipeRepository extends MongoRepository<Recipe, String> {
-    List<Recipe> findByUserId(String userId);
+public interface RecipeRepository extends JpaRepository<Recipe, Long> {
+    List<Recipe> findByUserId(Long userId);
 
-    Optional<Recipe> findByIdAndUserId(String id, String userId);
+    Optional<Recipe> findByIdAndUserId(Long id, Long userId);
 
     Optional<Recipe> findByTitle(String title);
 
     Optional<Recipe> findByDescription(String description);
 
-    List<Recipe> findByIngredients(List<String> ingredients);
+    List<Recipe> findByIngredientsContaining(String ingredient);
 
     Optional<Recipe> findByPrepTime(int prepTime);
 
-    Optional<Recipe> findByCategory(String category);
+    List<Recipe> findByCategory(String category);
 }

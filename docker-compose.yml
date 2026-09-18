@@ -1,17 +1,19 @@
 version: "3.9"
 
 services:
-  mongodb:
-    image: mongo:7
-    container_name: mongodb
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongo-data:/data/db
+      - postgres-data:/var/lib/postgresql/data
     environment:
-      MONGO_INITDB_DATABASE: recipe
+      POSTGRES_DB: recipe
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping').ok", "--quiet"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d recipe"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -35,14 +37,16 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://host.docker.internal:27017/recipe
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/recipe
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATA_REDIS_HOST: host.docker.internal
       SPRING_DATA_REDIS_PORT: 6379
     depends_on:
-      mongodb:
+      postgres:
         condition: service_healthy
       redis:
         condition: service_started
 
 volumes:
-  mongo-data:
+  postgres-data:

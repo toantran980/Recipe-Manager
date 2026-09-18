@@ -58,10 +58,10 @@ class AuthServiceTest {
         when(passwordEncoder.encode("secret")).thenReturn("encoded-secret");
         when(userRepository.save(org.mockito.ArgumentMatchers.any(User.class))).thenAnswer(invocation -> {
             User saved = invocation.getArgument(0);
-            saved.setId("user-1");
+            saved.setId(1L);
             return saved;
         });
-        when(jwtService.generateToken("user-1", "tester@example.com")).thenReturn("jwt-token");
+        when(jwtService.generateToken("1", "tester@example.com")).thenReturn("jwt-token");
 
         TokenResponse response = authService.register(user);
 
@@ -84,13 +84,13 @@ class AuthServiceTest {
     @Test
     void loginReturnsTokenWhenCredentialsMatch() {
         User user = new User();
-        user.setId("user-1");
+        user.setId(1L);
         user.setEmail("tester@example.com");
         user.setPassword("encoded-secret");
 
         when(userRepository.findByEmail("tester@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("secret", "encoded-secret")).thenReturn(true);
-        when(jwtService.generateToken("user-1", "tester@example.com")).thenReturn("jwt-token");
+        when(jwtService.generateToken("1", "tester@example.com")).thenReturn("jwt-token");
 
         TokenResponse response = authService.login("tester@example.com", "secret", request);
 

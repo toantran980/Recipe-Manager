@@ -1,4 +1,12 @@
 services:
+  - type: pserv
+    name: recipe-manager-db
+    runtime: postgresql
+    plan: free
+    postgresMajorVersion: 16
+    databaseName: recipe
+    user: recipe_user
+
   - type: web
     name: recipe-manager
     runtime: docker
@@ -9,13 +17,22 @@ services:
         value: 8080
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      # Set SPRING_DATA_MONGODB_URI in Render dashboard to your MongoDB Atlas URI
-      - key: SPRING_DATA_MONGODB_URI
-        sync: false
-      # Set JWT_SECRET in Render dashboard manually using the same value from your .env file
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: recipe-manager-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: recipe-manager-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: recipe-manager-db
+          property: password
+      # Set JWT_SECRET in Render dashboard manually
       - key: JWT_SECRET
         sync: false
-      # Set REDIS_HOST in Render dashboard to your Redis instance URL
+      # Redis (create a Redis instance in Render and link here)
       - key: REDIS_HOST
         sync: false
       - key: REDIS_PORT

@@ -41,38 +41,38 @@ class RecipeServiceTest {
     @Test
     void getAllRecipesReturnsRecipesForUser() {
         Recipe recipe = new Recipe();
-        recipe.setUserId("user-1");
-        when(recipeRepository.findByUserId("user-1")).thenReturn(List.of(recipe));
+        recipe.setUserId(1L);
+        when(recipeRepository.findByUserId(1L)).thenReturn(List.of(recipe));
 
-        List<Recipe> recipes = recipeService.getAllRecipes("user-1");
+        List<Recipe> recipes = recipeService.getAllRecipes(1L);
 
         assertEquals(1, recipes.size());
-        assertEquals("user-1", recipes.get(0).getUserId());
+        assertEquals(1L, recipes.get(0).getUserId());
     }
 
     @Test
     void getOneRecipeThrowsWhenRecipeMissing() {
-        when(recipeRepository.findById("missing-id")).thenReturn(Optional.empty());
+        when(recipeRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> recipeService.getOneRecipe("missing-id", "user-1"));
+        assertThrows(ResourceNotFoundException.class, () -> recipeService.getOneRecipe(999L, 1L));
     }
 
     @Test
     void getOneRecipeThrowsWhenUserIsNotOwner() {
         Recipe recipe = new Recipe();
-        recipe.setId("recipe-1");
-        recipe.setUserId("other-user");
+        recipe.setId(1L);
+        recipe.setUserId(2L);
 
-        when(recipeRepository.findById("recipe-1")).thenReturn(Optional.of(recipe));
+        when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
 
-        assertThrows(ForbiddenException.class, () -> recipeService.getOneRecipe("recipe-1", "user-1"));
+        assertThrows(ForbiddenException.class, () -> recipeService.getOneRecipe(1L, 1L));
     }
 
     @Test
     void updateRecipeSavesChangesWhenValid() {
         Recipe existing = new Recipe();
-        existing.setId("recipe-1");
-        existing.setUserId("user-1");
+        existing.setId(1L);
+        existing.setUserId(1L);
         existing.setTitle("Old");
 
         Recipe updated = new Recipe();
@@ -82,10 +82,10 @@ class RecipeServiceTest {
         updated.setPrepTime(10);
         updated.setCategory("Lunch");
 
-        when(recipeRepository.findById("recipe-1")).thenReturn(Optional.of(existing));
+        when(recipeRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(recipeRepository.save(org.mockito.ArgumentMatchers.any(Recipe.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Recipe result = recipeService.updateRecipe("recipe-1", "user-1", updated);
+        Recipe result = recipeService.updateRecipe(1L, 1L, updated);
 
         assertEquals("New", result.getTitle());
         assertEquals("Fresh", result.getDescription());
@@ -95,16 +95,16 @@ class RecipeServiceTest {
     @Test
     void getAllRecipesSupportsSearchAndFiltering() {
         Recipe recipe = new Recipe();
-        recipe.setId("recipe-1");
-        recipe.setUserId("user-1");
+        recipe.setId(1L);
+        recipe.setUserId(1L);
         recipe.setTitle("Vegetable Stir Fry");
         recipe.setCategory("Dinner");
         recipe.setPrepTime(20);
         recipe.setIngredients(List.of("Broccoli", "Soy Sauce"));
 
-        when(recipeRepository.findByUserId("user-1")).thenReturn(List.of(recipe));
+        when(recipeRepository.findByUserId(1L)).thenReturn(List.of(recipe));
 
-        List<Recipe> recipes = recipeService.getAllRecipes("user-1", "stir", "Dinner", 30, "soy", 0, 10);
+        List<Recipe> recipes = recipeService.getAllRecipes(1L, "stir", "Dinner", 30, "soy", 0, 10);
 
         assertEquals(1, recipes.size());
         assertEquals("Vegetable Stir Fry", recipes.get(0).getTitle());
@@ -113,18 +113,18 @@ class RecipeServiceTest {
     @Test
     void getAllRecipesSupportsPagination() {
         Recipe first = new Recipe();
-        first.setId("recipe-1");
-        first.setUserId("user-1");
+        first.setId(1L);
+        first.setUserId(1L);
         first.setTitle("First Recipe");
 
         Recipe second = new Recipe();
-        second.setId("recipe-2");
-        second.setUserId("user-1");
+        second.setId(2L);
+        second.setUserId(1L);
         second.setTitle("Second Recipe");
 
-        when(recipeRepository.findByUserId("user-1")).thenReturn(List.of(first, second));
+        when(recipeRepository.findByUserId(1L)).thenReturn(List.of(first, second));
 
-        List<Recipe> recipes = recipeService.getAllRecipes("user-1", null, null, null, null, 1, 1);
+        List<Recipe> recipes = recipeService.getAllRecipes(1L, null, null, null, null, 1, 1);
 
         assertEquals(1, recipes.size());
         assertEquals("Second Recipe", recipes.get(0).getTitle());
@@ -133,18 +133,18 @@ class RecipeServiceTest {
     @Test
     void uploadRecipeImageStoresAUrlForTheRecipe() throws Exception {
         Recipe existing = new Recipe();
-        existing.setId("recipe-1");
-        existing.setUserId("user-1");
+        existing.setId(1L);
+        existing.setUserId(1L);
         existing.setTitle("Soup");
 
         MockMultipartFile file = new MockMultipartFile("file", "soup.png", "image/png", "image-bytes".getBytes());
 
-        when(recipeRepository.findById("recipe-1")).thenReturn(Optional.of(existing));
+        when(recipeRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(recipeRepository.save(org.mockito.ArgumentMatchers.any(Recipe.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Recipe result = recipeService.uploadRecipeImage("recipe-1", "user-1", file);
+        Recipe result = recipeService.uploadRecipeImage(1L, 1L, file);
 
-        assertEquals("user-1", result.getUserId());
+        assertEquals(1L, result.getUserId());
         assertEquals("Soup", result.getTitle());
         assertTrue(result.getImageUrl() != null && !result.getImageUrl().isBlank());
         verify(recipeRepository).save(org.mockito.ArgumentMatchers.any(Recipe.class));

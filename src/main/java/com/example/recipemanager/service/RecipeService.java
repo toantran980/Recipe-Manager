@@ -36,12 +36,12 @@ public class RecipeService {
     }
 
     // READ ALL | gets all recipes, for that user
-    public List<Recipe> getAllRecipes(String userId) {
+    public List<Recipe> getAllRecipes(Long userId) {
         return getAllRecipes(userId, null, null, null, null, 0, 20);
     }
 
     @Cacheable(value = "recipes", key = "#userId + ':' + (#search != null ? #search : '') + ':' + (#category != null ? #category : '')")
-    public List<Recipe> getAllRecipes(String userId, String search, String category, Integer maxPrepTime, String ingredient, Integer page, Integer size) {
+    public List<Recipe> getAllRecipes(Long userId, String search, String category, Integer maxPrepTime, String ingredient, Integer page, Integer size) {
         List<Recipe> recipes = recipeRepo.findByUserId(userId).stream()
                 .filter(recipe -> {
                     String title = recipe.getTitle() == null ? "" : recipe.getTitle().toLowerCase();
@@ -72,7 +72,7 @@ public class RecipeService {
 
     // READ ONE | gets one recipe, if it belongs to the user
     @Cacheable(value = "recipes", key = "#recipeId")
-    public Recipe getOneRecipe(String recipeId, String userId) {
+    public Recipe getOneRecipe(Long recipeId, Long userId) {
         Recipe recipe = recipeRepo.findById(recipeId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recipe with id " + recipeId + " not found"));
 
@@ -85,7 +85,7 @@ public class RecipeService {
 
     // UPDATE | updates a recipe, if it belongs to the user
     @CacheEvict(value = "recipes", allEntries = true)
-    public Recipe updateRecipe(String recipeId, String userId, Recipe recipe) {
+    public Recipe updateRecipe(Long recipeId, Long userId, Recipe recipe) {
         Recipe currentRecipe = getOneRecipe(recipeId, userId);
 
         if (!StringUtils.hasText(recipe.getTitle())) {
@@ -106,13 +106,13 @@ public class RecipeService {
 
     // DELETE | deletes a recipe, if it belongs to the user
     @CacheEvict(value = "recipes", allEntries = true)
-    public void deleteRecipe(String recipeId, String userId) {
+    public void deleteRecipe(Long recipeId, Long userId) {
         Recipe recipe = getOneRecipe(recipeId, userId);
         recipeRepo.delete(recipe);
     }
 
     @CacheEvict(value = "recipes", allEntries = true)
-    public Recipe uploadRecipeImage(String recipeId, String userId, MultipartFile file) {
+    public Recipe uploadRecipeImage(Long recipeId, Long userId, MultipartFile file) {
         Recipe recipe = getOneRecipe(recipeId, userId);
 
         if (file == null || file.isEmpty()) {

@@ -2,8 +2,10 @@ package com.example.recipemanager;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest(properties = {"jwt.secret=RoMVeISHLQP9F2jTWlATv9uuqQbY9ZSFusg4pm7Z90c="})
+@SpringBootTest
+@ActiveProfiles("test")
 class RecipemanagerApplicationTests {
 
 	@Test

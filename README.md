@@ -1,219 +1,178 @@
-# Recipe Manager System
+# Recipe Manager API
 
-![Java CI](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml/badge.svg)
+[![Java CI](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml/badge.svg)](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml)
 ![Java](https://img.shields.io/badge/Java-25-blue)
-![Spring Boot](<https://img.shields.io/badge/Spring%20Boot-4.0.5-brightgreen>)
+![Spring Boot](<https://img.shields.io/badge/Spring%20Boot-4.0.7-brightgreen>)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## Overview
-
-This project is a secure backend API for managing personal recipe collections. Users can register, sign in with JWT authentication, create recipes, filter and paginate them, and upload images for each recipe.
-
-## Team Members
-
-
-
-## Contributions & Project History
-**Original College Project:**
-- James Nguyen   806134391 
-- Toan Tran    881738009 
-
-**Solo Updates (Post-Graduation):** All commits and updates after May 15, 2026 were completed independently by me for skill development.
+A secure REST API for managing personal recipe collections with JWT authentication, built with Spring Boot and PostgreSQL.
 
 ## Features
 
-- User registration and login with JWT-based authentication
-- Recipe CRUD with ownership checks
-- Search, category, prep-time, and ingredient filtering
-- Pagination support for recipe listing
-- Image upload support for recipes
-- Swagger/OpenAPI documentation
-- Docker support and CI workflow for automated testing
+- **Authentication** — Register, login, logout with JWT tokens
+- **Recipe CRUD** — Create, read, update, delete recipes with ownership enforcement
+- **Search & Filter** — By title, description, category, prep time, ingredients
+- **Pagination** — Configurable page/size for listing endpoints
+- **Image Upload** — Base64-encoded image storage per recipe
+- **API Docs** — Swagger/OpenAPI at `/swagger-ui/index.html`
+- **Health Checks** — Actuator endpoint at `/api/health`
+- **Rate Limiting** — IP-based login attempt throttling
+- **Token Blacklisting** — Secure logout with Redis-backed invalidation
 
 ## Tech Stack
 
-| Tech             | Details                           |
-| :--------------- | :-------------------------------- |
-| Language         | Java 21                           |
-| Framework        | Spring Boot 4.0.5                 |
-| Build Tool       | Maven                             |
-| Database         | MongoDB (via Spring Data MongoDB) |
-| Security         | Spring Security + JWT             |
-| Containerization | Docker                            |
-| API Testing      | Postman                           |
-| Utilities        | Lombok                            |
+| Layer            | Technology                       |
+| ---------------- | -------------------------------- |
+| Language         | Java 25                          |
+| Framework        | Spring Boot 4.0.7                |
+| Build            | Maven                            |
+| Database         | PostgreSQL 16 (Spring Data JPA)  |
+| Cache/Session    | Redis 7                          |
+| Security         | Spring Security + JWT (jjwt)     |
+| Containerization | Docker / Docker Compose          |
+| Testing          | JUnit 5, Mockito, H2 (in-memory) |
+| CI/CD            | GitHub Actions                   |
 
 ## Quick Start
 
-1. Make sure Docker Desktop is running.
-2. Clone or download the repository and open PowerShell in the project root.
-3. Start the app and MongoDB with Docker:
-   ```bash
-   docker compose up --d
-   ```
-4. The API will be available at:
-   - http://localhost:8080/api/health
-   - http://localhost:8080/swagger-ui/index.html
+### Prerequisites
+
+- Docker Desktop (recommended) **or** Java 25 + PostgreSQL 16 + Redis 7
+
+### Option 1: Docker Compose (Recommended)
+
+```bash
+docker compose up -d
+```
+
+| Service    | URL                                         |
+| ---------- | ------------------------------------------- |
+| API        | http://localhost:8080                       |
+| Swagger UI | http://localhost:8080/swagger-ui/index.html |
+| Health     | http://localhost:8080/api/health            |
+
+### Option 2: Local Development
+
+```bash
+# 1. Start PostgreSQL & Redis (adjust as needed)
+docker run -d --name postgres -e POSTGRES_DB=recipe -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:16
+docker run -d --name redis -p 6379:6379 redis:7-alpine
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your credentials
+
+# 3. Run
+./mvnw spring-boot:run
+```
+
+## Configuration
+
+| Variable                       | Description                | Default                                     |
+| ------------------------------ | -------------------------- | ------------------------------------------- |
+| `SPRING_PROFILES_ACTIVE`     | `dev` or `prod`        | `dev`                                     |
+| `SPRING_DATASOURCE_URL`      | PostgreSQL JDBC URL        | `jdbc:postgresql://localhost:5432/recipe` |
+| `SPRING_DATASOURCE_USERNAME` | DB username                | `postgres`                                |
+| `SPRING_DATASOURCE_PASSWORD` | DB password                | `postgres`                                |
+| `SPRING_DATA_REDIS_HOST`     | Redis host                 | `localhost`                               |
+| `SPRING_DATA_REDIS_PORT`     | Redis port                 | `6379`                                    |
+| `JWT_SECRET`                 | Base64-encoded 256-bit key | **Required**                          |
+| `JWT_EXPIRATION_MS`          | Token TTL (ms)             | `86400000` (24h)                          |
+
+Generate a secure secret:
+
+```bash
+openssl rand -base64 32
+```
+
+## API Endpoints
+
+### Authentication
+
+| Method   | Path                   | Description        |
+| -------- | ---------------------- | ------------------ |
+| `POST` | `/api/auth/register` | Register new user  |
+| `POST` | `/api/auth/login`    | Login, returns JWT |
+| `POST` | `/api/auth/logout`   | Invalidate token   |
+
+### Recipes (require `Authorization: Bearer <token>`)
+
+| Method     | Path                        | Description                 |
+| ---------- | --------------------------- | --------------------------- |
+| `POST`   | `/api/recipes`            | Create recipe               |
+| `GET`    | `/api/recipes`            | List recipes (with filters) |
+| `GET`    | `/api/recipes/{id}`       | Get single recipe           |
+| `PUT`    | `/api/recipes/{id}`       | Update recipe               |
+| `DELETE` | `/api/recipes/{id}`       | Delete recipe               |
+| `POST`   | `/api/recipes/{id}/image` | Upload image                |
+
+### Recipe Query Parameters
+
+| Param           | Type   | Description              |
+| --------------- | ------ | ------------------------ |
+| `search`      | string | Search title/description |
+| `category`    | string | Filter by category       |
+| `maxPrepTime` | int    | Max prep time (minutes)  |
+| `ingredient`  | string | Filter by ingredient     |
+| `page`        | int    | Page number (0-based)    |
+| `size`        | int    | Page size (default 20)   |
 
 ## Testing
 
-Run the test suite with:
-
 ```bash
+# Unit + integration tests (uses H2 in-memory)
 ./mvnw test
+
+# Run with coverage
+./mvnw test jacoco:report
 ```
 
-## Deployment
+## Deployment (Render)
 
-- The repository includes a Render deployment configuration in [render.yaml](render.yaml).
-- Store secrets such as `JWT_SECRET` and database credentials in your deployment platform environment variables instead of the repository.
-- A health check endpoint is available at `/api/health` for deployment monitoring.
+The repository includes `render.yaml` for zero-config deployment:
 
-## Demo Walkthrough
+1. **Push to GitHub** — Connect repo to Render
+2. **Create Services** — `render.yaml` provisions:
+   - PostgreSQL database (`recipe-manager-db`)
+   - Web Service (`recipe-manager`)
+3. **Set Secrets** in Render dashboard:
+   - `JWT_SECRET` (generate with `openssl rand -base64 32`)
+   - `REDIS_HOST` / `REDIS_PORT` (create Redis instance in Render)
+4. **Deploy** — Automatic on push to main
 
-A short walkthrough of the project is available here:
+Health check: `GET /api/health`
 
-- Demo walkthrough: [YouTube](https://youtu.be/0v1tobeRqmM)
+## Project Structure
 
-### 1) POST /api/auth/register
+```
+src/main/java/com/example/recipemanager/
+├── config/           # Security, Redis configuration
+├── controller/       # REST endpoints (Auth, Recipe, Health)
+├── dto/              # Request/response records
+├── entity/           # JPA entities (User, Recipe)
+├── exception/        # Custom exceptions & global handler
+├── repository/       # Spring Data JPA repositories
+├── security/         # JWT service, filter, auth principal
+├── service/          # Business logic (Auth, Recipe)
+└── RecipemanagerApplication.java
+```
 
-- Scenario: Allen Key creates an account
-- http://localhost:8080/api/auth/register
-- {
-  "username": "AllenKey",
-  "email": "allenkey@csu.fullerton.edu",
-  "password": "hexwrench123",
-  "roles": ["USER"]
-  }
+## CI/CD Pipeline
 
-<img width="698" height="620" alt="Screenshot 2026-05-03 025255" src="https://github.com/user-attachments/assets/8d2fd556-c175-4c73-9aae-a51c1cac64f4" />
+GitHub Actions (`.github/workflows/ci.yml`):
 
-### 2) POST /api/auth/login
+- Build & test on every push/PR
+- Maven dependency caching
+- Test reports uploaded as artifacts
 
-- Scenario: Allen Key logs into his account
-- http://localhost:8080/api/auth/login
-- {
-  "email": "allenkey@csu.fullerton.edu",
-  "password": "hexwrench123"
-  }
+## License
 
-<img width="695" height="615" alt="Screenshot 2026-05-03 025447" src="https://github.com/user-attachments/assets/5732029c-8e86-4169-9227-d46e8a85c6ed" />
+MIT — see [LICENSE](LICENSE) for details.
 
-### 3) POST /api/recipes
+---
 
-- Scenario: Allen Key adds a Vegetable Stir Fry recipe
-- http://localhost:8080/api/recipes
-- {
-  "title": "Vegetable Stir Fry",
-  "description": "A quick and healthy meal with seasonal vegetables.",
-  "ingredients": ["Broccoli", "Carrots", "Bell Peppers", "Soy Sauce", "Ginger"],
-  "prepTime": 20,
-  "category": "Dinner"
-  }
+**Original College Project** 
+James Nguyen  • Toan Tran
 
-<img width="697" height="772" alt="Screenshot 2026-05-03 025545" src="https://github.com/user-attachments/assets/dc2d5688-d089-48e5-9d70-e9bcafe673e4" />
-
-### 4) GET /api/recipes
-
-- Scenario: Allen Key views all of his recipes
-- http://localhost:8080/api/recipes
-
-<img width="696" height="808" alt="Screenshot 2026-05-03 025721" src="https://github.com/user-attachments/assets/9173d559-eeab-404e-b9bb-00595acbd209" />
-
-### 5) POST /api/auth/register
-
-- Scenario: John Wick creates an account
-- http://localhost:8080/api/auth/register
-- {
-  "username": "JohnWick",
-  "email": "johnwick@gmail.com",
-  "password": "theContinental#123",
-  "roles": ["USER"]
-  }
-
-<img width="696" height="612" alt="Screenshot 2026-05-03 025922" src="https://github.com/user-attachments/assets/0047df63-53b4-4d64-8b66-3c7768249407" />
-
-### 6) POST /api/auth/login
-
-- Scenario: John Wick logs into his account
-- http://localhost:8080/api/auth/login
-- {
-  "email": "johnwick@gmail.com",
-  "password": "theContinental#123"
-  }
-
-<img width="697" height="612" alt="Screenshot 2026-05-03 030036" src="https://github.com/user-attachments/assets/b0902bcf-1f0f-4173-ae7a-099c67b0fa88" />
-
-### 7) POST /api/recipes
-
-- Scenario: John Wick adds a Lemon Herb Roasted Chicken recipe
-- http://localhost:8080/api/recipes
-- {
-  "title": "Lemon Herb Roasted Chicken",
-  "description": "Juicy chicken thighs roasted with lemon, garlic, and fresh herbs.",
-  "ingredients": ["Chicken Thighs", "Lemon", "Garlic", "Olive Oil", "Thyme", "Rosemary"],
-  "prepTime": 15,
-  "category": "Dinner"
-  }
-
-<img width="695" height="810" alt="Screenshot 2026-05-03 030141" src="https://github.com/user-attachments/assets/699fbb59-76a3-4920-a709-fc77925c8daf" />
-
-### 8) POST /api/recipes
-
-- Scenario: John Wick adds a Caprese Salad recipe
-- http://localhost:8080/api/recipes
-- {
-  "title": "Caprese Salad",
-  "description": "A fresh Italian salad with tomatoes, mozzarella, and basil.",
-  "ingredients": ["Tomatoes", "Mozzarella", "Basil", "Olive Oil", "Balsamic Glaze"],
-  "prepTime": 10,
-  "category": "Lunch"
-  }
-
-<img width="697" height="769" alt="Screenshot 2026-05-03 030217" src="https://github.com/user-attachments/assets/0e5305d6-2f61-4a25-81a7-7e37e9d1a87a" />
-
-### 9) GET /api/recipes
-
-- Scenario: John Wick views all of his recipes
-- http://localhost:8080/api/recipes
-
-<img width="698" height="872" alt="Screenshot 2026-05-03 030330" src="https://github.com/user-attachments/assets/fca0a70c-0613-4ecb-83e8-49baaa344705" />
-
-### 10) GET /api/recipes/
-
-- Scenario: John Wick views one of his recipes (Caprese Salad)
-- http://localhost:8080/api/recipes/{id}
-
-<img width="696" height="516" alt="Screenshot 2026-05-03 030425" src="https://github.com/user-attachments/assets/66a12467-1e06-4700-b34f-9e4e910610b5" />
-
-### 11) PUT /api/recipes/
-
-- Scenario: John Wick updates one of his recipes (Caprese Salad)
-- http://localhost:8080/api/recipes/{id}
-- {
-  "title": "Caprese Salad (Version 2.0)",
-  "description": "An updated Italian salad with salt and pepper seasoning.",
-  "ingredients": ["Tomatoes", "Mozzarella", "Basil", "Olive Oil", "Salt", "Pepper"],
-  "prepTime": 5,
-  "category": "Snack"
-  }
-
-<img width="699" height="690" alt="Screenshot 2026-05-03 030528" src="https://github.com/user-attachments/assets/022ef2ea-c824-41e4-965c-c325e3e7cfea" />
-
-### 12) DELETE /api/recipes/
-
-- Scenario: John Wick deletes one of his recipes (Lemon Herb Roasted Chicken)
-- http://localhost:8080/api/recipes/{id}
-
-<img width="700" height="443" alt="Screenshot 2026-05-03 030649" src="https://github.com/user-attachments/assets/2cb99911-e58e-4d47-805c-2a24f9a68b98" />
-
-*Note*: Verifying changes in GET /api/recipes (see picture below)
-• Lemon Herb Roasted Chicken recipe is no longer present
-• Only the updated Caprese Salad recipe remains (after Step 11)
-
-<img width="697" height="573" alt="Screenshot 2026-05-03 030723" src="https://github.com/user-attachments/assets/615c82e9-ab0e-4b36-8f58-d96d213c0d1b" />
-
-## Quality & CI/CD
-
-- Automated test execution runs on every push and pull request through GitHub Actions.
-- Service-layer and controller tests cover authentication, recipe business logic, and request validation.
-- This setup is ready to be connected to Render or Railway for continuous deployment.
+**Post-Graduation Maintenance** — All updates after May 15, 2026 by Toan Tran for skill development.

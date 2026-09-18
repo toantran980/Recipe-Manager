@@ -45,7 +45,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
 
-        String token = jwtService.generateToken(savedUser.getId(), savedUser.getEmail());
+        String token = jwtService.generateToken(savedUser.getId().toString(), savedUser.getEmail());
         return new TokenResponse(token);
     }
 
@@ -68,7 +68,7 @@ public class AuthService {
         }
 
         rateLimitFilter.reset(ip);
-        String token = jwtService.generateToken(user.getId(), user.getEmail());
+        String token = jwtService.generateToken(user.getId().toString(), user.getEmail());
         return new TokenResponse(token);
     }
 
