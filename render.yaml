@@ -1,9 +1,4 @@
 services:
-  - type: pserv
-    name: recipe-manager-db
-    runtime: postgresql
-    plan: free
-
   - type: web
     name: recipe-manager
     runtime: docker
@@ -15,21 +10,13 @@ services:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: recipe-manager-db
-          property: connectionString
+        sync: false
       - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: recipe-manager-db
-          property: user
+        sync: false
       - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: recipe-manager-db
-          property: password
-      # Set JWT_SECRET in Render dashboard manually
+        sync: false
       - key: JWT_SECRET
         sync: false
-      # Redis (create a Redis instance in Render and link here)
       - key: REDIS_HOST
         sync: false
       - key: REDIS_PORT
