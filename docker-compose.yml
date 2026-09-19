@@ -2,12 +2,12 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: postgres
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
     environment:
       POSTGRES_DB: recipe
       POSTGRES_USER: postgres
@@ -36,11 +36,14 @@ services:
     build: .
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/recipe
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/recipe
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_DATA_REDIS_HOST: host.docker.internal
+      SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
     depends_on:
       postgres:
