@@ -1,6 +1,7 @@
 # Recipe Manager API
 
 [![Java CI](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml/badge.svg)](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-online-brightgreen)](https://recipe-manager-jh73.onrender.com)
 ![Java](https://img.shields.io/badge/Java-25-blue)
 ![Spring Boot](<https://img.shields.io/badge/Spring%20Boot-4.0.7-brightgreen>)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
@@ -51,6 +52,12 @@ docker compose up -d
 | API        | http://localhost:8080                       |
 | Swagger UI | http://localhost:8080/swagger-ui/index.html |
 | Health     | http://localhost:8080/api/health            |
+
+| Service    | URL                                                  |
+| ---------- | ---------------------------------------------------- |
+| **Production API** | https://recipe-manager-jh73.onrender.com |
+| **Swagger UI** | https://recipe-manager-jh73.onrender.com/swagger-ui/index.html |
+| **Health** | https://recipe-manager-jh73.onrender.com/api/health |
 
 ### Option 2: Local Development
 
@@ -106,6 +113,14 @@ openssl rand -base64 32
 | `PUT`    | `/api/recipes/{id}`       | Update recipe               |
 | `DELETE` | `/api/recipes/{id}`       | Delete recipe               |
 | `POST`   | `/api/recipes/{id}/image` | Upload image                |
+
+### Health & Documentation
+
+| Method | Path                          | Description              |
+| ------ | ----------------------------- | ------------------------ |
+| `GET`  | `/api/health`                 | Health check             |
+| `GET`  | `/api-docs`                   | OpenAPI JSON spec        |
+| `GET`  | `/swagger-ui/index.html`      | Swagger UI (interactive) |
 
 ### Recipe Query Parameters
 
@@ -166,8 +181,8 @@ openssl rand -base64 32
 
 5. **Save → Auto-deploys**
 
-Health check: `GET https://your-app.onrender.com/api/health`  
-Swagger: `https://your-app.onrender.com/swagger-ui/index.html`
+Health check: `GET https://recipe-manager-jh73.onrender.com/api/health`  
+Swagger: `https://recipe-manager-jh73.onrender.com/swagger-ui/index.html`
 
 ### Local Development (unchanged)
 Use Docker Compose with local PostgreSQL/Redis — see [Quick Start](#quick-start).
