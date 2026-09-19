@@ -27,7 +27,7 @@ A secure REST API for managing personal recipe collections with JWT authenticati
 | Language         | Java 25                          |
 | Framework        | Spring Boot 4.0.7                |
 | Build            | Maven                            |
-| Database         | PostgreSQL 16 (Spring Data JPA)  |
+| Database         | PostgreSQL 16 (Spring Data JPA) — **Use Neon/Supabase for production** (Render free tier expires in 30 days)  |
 | Cache/Session    | Redis 7                          |
 | Security         | Spring Security + JWT (jjwt)     |
 | Containerization | Docker / Docker Compose          |
@@ -128,20 +128,49 @@ openssl rand -base64 32
 ./mvnw test jacoco:report
 ```
 
-## Deployment (Render)
+## Deployment (Render + Neon)
 
-The repository includes `render.yaml` for zero-config deployment:
+**⚠️ Render's free PostgreSQL expires in 30 days.** Use **Neon** (permanent free tier) for the database.
 
-1. **Push to GitHub** — Connect repo to Render
-2. **Create Services** — `render.yaml` provisions:
-   - PostgreSQL database (`recipe-manager-db`)
-   - Web Service (`recipe-manager`)
-3. **Set Secrets** in Render dashboard:
-   - `JWT_SECRET` (generate with `openssl rand -base64 32`)
-   - `REDIS_HOST` / `REDIS_PORT` (create Redis instance in Render)
-4. **Deploy** — Automatic on push to main
+### Prerequisites
+- GitHub repo connected to Render
+- [Neon account](https://neon.tech) (free, serverless PostgreSQL)
+- [Render account](https://render.com)
 
-Health check: `GET /api/health`
+### Step-by-Step
+
+1. **Create Neon PostgreSQL**
+   - New Project → `recipe-manager` → Free tier
+   - Copy **Pooled Connection String** (starts with `postgresql://`)
+
+2. **Create Render Redis**
+   - Dashboard → New → Redis → `recipe-manager-redis` → Free
+   - Copy **Internal Connection String** (extract host, port 6379)
+
+3. **Deploy Web Service via Blueprint**
+   - Render Dashboard → New → Blueprint → Connect repo
+   - Blueprint name: `recipe-manager-prod`
+   - Applies `render.yaml` (web service only)
+
+4. **Set Environment Variables** (Web Service → Environment)
+
+| Variable | Value |
+|----------|-------|
+| `SPRING_PROFILES_ACTIVE` | `prod` |
+| `SPRING_DATASOURCE_URL` | *Neon pooled connection string* |
+| `SPRING_DATASOURCE_USERNAME` | *From Neon connection string* |
+| `SPRING_DATASOURCE_PASSWORD` | *From Neon connection string* |
+| `JWT_SECRET` | `openssl rand -base64 32` |
+| `REDIS_HOST` | *Render Redis host* |
+| `REDIS_PORT` | `6379` |
+
+5. **Save → Auto-deploys**
+
+Health check: `GET https://your-app.onrender.com/api/health`  
+Swagger: `https://your-app.onrender.com/swagger-ui/index.html`
+
+### Local Development (unchanged)
+Use Docker Compose with local PostgreSQL/Redis — see [Quick Start](#quick-start).
 
 ## Project Structure
 
