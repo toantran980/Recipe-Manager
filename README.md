@@ -1,7 +1,7 @@
 # Recipe Manager API
 
 [![Java CI](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml/badge.svg)](https://github.com/toantran980/Recipe-Manager/actions/workflows/ci.yml)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-online-brightgreen)](https://recipe-manager-jh73.onrender.com)
+[![Live Demo](<https://img.shields.io/badge/Live%20Demo-online-brightgreen>)](https://recipe-manager-jh73.onrender.com)
 ![Java](https://img.shields.io/badge/Java-25-blue)
 ![Spring Boot](<https://img.shields.io/badge/Spring%20Boot-4.0.7-brightgreen>)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18-blue)
@@ -38,18 +38,18 @@ A secure REST API for managing personal recipe collections with JWT authenticati
 
 ## Tech Stack
 
-| Layer            | Technology                       |
-| ---------------- | -------------------------------- |
-| Language         | Java 25                          |
-| Framework        | Spring Boot 4.0.7                |
-| Build            | Maven                            |
-| Database         | PostgreSQL 18 (Spring Data JPA) — **Use Neon/Supabase for production** (Render free tier expires in 30 days)  |
-| Cache/Session    | Redis 7                          |
-| Security         | Spring Security + JWT (jjwt)     |
-| Monitoring       | Spring Boot Actuator             |
-| Containerization | Docker / Docker Compose          |
-| Testing          | JUnit 5, Mockito, H2 (in-memory) |
-| CI/CD            | GitHub Actions                   |
+| Layer            | Technology                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Language         | Java 25                                                                                                            |
+| Framework        | Spring Boot 4.0.7                                                                                                  |
+| Build            | Maven                                                                                                              |
+| Database         | PostgreSQL 18 (Spring Data JPA) —**Use Neon/Supabase for production** (Render free tier expires in 30 days) |
+| Cache/Session    | Redis 7                                                                                                            |
+| Security         | Spring Security + JWT (jjwt)                                                                                       |
+| Monitoring       | Spring Boot Actuator                                                                                               |
+| Containerization | Docker / Docker Compose                                                                                            |
+| Testing          | JUnit 5, Mockito, H2 (in-memory)                                                                                   |
+| CI/CD            | GitHub Actions                                                                                                     |
 
 ## Quick Start
 
@@ -67,13 +67,13 @@ docker compose up -d
 | ---------- | ------------------------------------------- |
 | API        | http://localhost:8080                       |
 | Swagger UI | http://localhost:8080/swagger-ui/index.html |
-| Health     | http://localhost:8080/api/v1/health              |
+| Health     | http://localhost:8080/api/v1/health         |
 
-| Service    | URL                                                       |
-| ---------- | --------------------------------------------------------- |
-| **Production API** | https://recipe-manager-jh73.onrender.com              |
-| **Swagger UI** | https://recipe-manager-jh73.onrender.com/swagger-ui/index.html |
-| **Health** | https://recipe-manager-jh73.onrender.com/api/v1/health |
+| Service                  | URL                                                            |
+| ------------------------ | -------------------------------------------------------------- |
+| **Production API** | https://recipe-manager-jh73.onrender.com                       |
+| **Swagger UI**     | https://recipe-manager-jh73.onrender.com/swagger-ui/index.html |
+| **Health**         | https://recipe-manager-jh73.onrender.com/api/v1/health         |
 
 ### Option 2: Local Development
 
@@ -94,18 +94,18 @@ cp .env.example .env
 
 ### Environment Variables
 
-| Variable                       | Description                | Default                                     |
-| ------------------------------ | -------------------------- | ------------------------------------------- |
-| `SPRING_PROFILES_ACTIVE`      | `dev` or `prod`            | `dev`                                     |
-| `SPRING_DATASOURCE_URL`       | PostgreSQL JDBC URL        | `jdbc:postgresql://localhost:5432/recipe` |
-| `SPRING_DATASOURCE_USERNAME`  | DB username                | `postgres`                                |
-| `SPRING_DATASOURCE_PASSWORD`  | DB password                | `postgres`                                |
-| `SPRING_DATA_REDIS_HOST`      | Redis host                 | `localhost`                               |
-| `SPRING_DATA_REDIS_PORT`      | Redis port                 | `6379`                                    |
-| `JWT_SECRET`                  | Base64-encoded 256-bit key | **Required in production**                |
-| `JWT_EXPIRATION_MS`           | Token TTL (ms)             | `86400000` (24h)                          |
-| `PORT`                        | Server port                | `8080`                                    |
-| `CORS_ALLOWED_ORIGINS`        | CORS allowed origins       | `http://localhost:3000,http://localhost:8080` |
+| Variable                       | Description                | Default                                         |
+| ------------------------------ | -------------------------- | ----------------------------------------------- |
+| `SPRING_PROFILES_ACTIVE`     | `dev` or `prod`        | `dev`                                         |
+| `SPRING_DATASOURCE_URL`      | PostgreSQL JDBC URL        | `jdbc:postgresql://localhost:5432/recipe`     |
+| `SPRING_DATASOURCE_USERNAME` | DB username                | `postgres`                                    |
+| `SPRING_DATASOURCE_PASSWORD` | DB password                | `postgres`                                    |
+| `SPRING_DATA_REDIS_HOST`     | Redis host                 | `localhost`                                   |
+| `SPRING_DATA_REDIS_PORT`     | Redis port                 | `6379`                                        |
+| `JWT_SECRET`                 | Base64-encoded 256-bit key | **Required in production**                |
+| `JWT_EXPIRATION_MS`          | Token TTL (ms)             | `86400000` (24h)                              |
+| `PORT`                       | Server port                | `8080`                                        |
+| `CORS_ALLOWED_ORIGINS`       | CORS allowed origins       | `http://localhost:3000,http://localhost:8080` |
 
 ### Configuration Files
 
@@ -125,19 +125,19 @@ openssl rand -base64 32
 
 ### Authentication
 
-| Method   | Path                        | Description        |
-| -------- | --------------------------- | ------------------ |
-| `POST` | `/api/v1/auth/register`   | Register new user  |
-| `POST` | `/api/v1/auth/login`      | Login, returns JWT |
-| `POST` | `/api/v1/auth/logout`     | Invalidate token   |
-| `POST` | `/api/v1/auth/forgot-password` | Request password reset |
+| Method   | Path                             | Description               |
+| -------- | -------------------------------- | ------------------------- |
+| `POST` | `/api/v1/auth/register`        | Register new user         |
+| `POST` | `/api/v1/auth/login`           | Login, returns JWT        |
+| `POST` | `/api/v1/auth/logout`          | Invalidate token          |
+| `POST` | `/api/v1/auth/forgot-password` | Request password reset    |
 | `POST` | `/api/v1/auth/reset-password`  | Reset password with token |
-| `POST` | `/api/v1/auth/verify-email`    | Verify email with token |
+| `POST` | `/api/v1/auth/verify-email`    | Verify email with token   |
 
 ### Recipes (require `Authorization: Bearer <token>`)
 
-| Method     | Path                              | Description                 |
-| ---------- | --------------------------------- | --------------------------- |
+| Method     | Path                               | Description                 |
+| ---------- | ---------------------------------- | --------------------------- |
 | `POST`   | `/api/v1/recipes`                | Create recipe               |
 | `GET`    | `/api/v1/recipes`                | List recipes (with filters) |
 | `GET`    | `/api/v1/recipes/{id}`           | Get single recipe           |
@@ -146,37 +146,37 @@ openssl rand -base64 32
 | `POST`   | `/api/v1/recipes/{id}/image`     | Upload image                |
 | `POST`   | `/api/v1/recipes/{id}/duplicate` | Duplicate recipe            |
 | `DELETE` | `/api/v1/recipes/bulk`           | Bulk delete recipes         |
-| `GET`    | `/api/v1/recipes/{id}/export`   | Export recipe as JSON       |
+| `GET`    | `/api/v1/recipes/{id}/export`    | Export recipe as JSON       |
 | `POST`   | `/api/v1/recipes/import`         | Import recipe from JSON     |
 
 ### User Management (require `Authorization: Bearer <token>`)
 
-| Method   | Path                        | Description              |
-| -------- | --------------------------- | ------------------------ |
-| `GET`  | `/api/v1/users/profile`    | Get user profile         |
-| `PUT`  | `/api/v1/users/profile`    | Update user profile      |
-| `POST` | `/api/v1/users/change-password` | Change password      |
+| Method   | Path                              | Description         |
+| -------- | --------------------------------- | ------------------- |
+| `GET`  | `/api/v1/users/profile`         | Get user profile    |
+| `PUT`  | `/api/v1/users/profile`         | Update user profile |
+| `POST` | `/api/v1/users/change-password` | Change password     |
 
 ### Health & Documentation
 
-| Method | Path                          | Description              |
-| ------ | ----------------------------- | ------------------------ |
-| `GET`  | `/api/v1/health`              | Health check             |
-| `GET`  | `/api-docs`                   | OpenAPI JSON spec        |
-| `GET`  | `/swagger-ui/index.html`      | Swagger UI (interactive) |
+| Method  | Path                       | Description              |
+| ------- | -------------------------- | ------------------------ |
+| `GET` | `/api/v1/health`         | Health check             |
+| `GET` | `/api-docs`              | OpenAPI JSON spec        |
+| `GET` | `/swagger-ui/index.html` | Swagger UI (interactive) |
 
 ### Recipe Query Parameters
 
-| Param           | Type   | Description              |
-| --------------- | ------ | ------------------------ |
-| `search`      | string | Search title/description |
-| `category`    | string | Filter by category       |
-| `maxPrepTime` | int    | Max prep time (minutes)  |
-| `ingredient`  | string | Filter by ingredient     |
-| `sortBy`      | string | Sort by field (title, prepTime, createdAt, category) |
-| `sortDirection` | string | Sort direction (asc, desc) |
-| `page`        | int    | Page number (0-based)    |
-| `size`        | int    | Page size (default 20)   |
+| Param             | Type   | Description                                          |
+| ----------------- | ------ | ---------------------------------------------------- |
+| `search`        | string | Search title/description                             |
+| `category`      | string | Filter by category                                   |
+| `maxPrepTime`   | int    | Max prep time (minutes)                              |
+| `ingredient`    | string | Filter by ingredient                                 |
+| `sortBy`        | string | Sort by field (title, prepTime, createdAt, category) |
+| `sortDirection` | string | Sort direction (asc, desc)                           |
+| `page`          | int    | Page number (0-based)                                |
+| `size`          | int    | Page size (default 20)                               |
 
 ## Testing
 
@@ -192,6 +192,7 @@ openssl rand -base64 32
 ```
 
 ### Test Coverage
+
 - Unit tests for service layer with mocked dependencies
 - Integration tests with real database (H2 in-memory)
 - API endpoint testing with Spring Security context
@@ -202,6 +203,7 @@ openssl rand -base64 32
 **⚠️ Render's free PostgreSQL expires in 30 days.** Use **Neon** (permanent free tier) for the database.
 
 ### Prerequisites
+
 - GitHub repo connected to Render
 - [Neon account](https://neon.tech) (free, serverless PostgreSQL)
 - [Render account](https://render.com)
@@ -209,41 +211,43 @@ openssl rand -base64 32
 ### Step-by-Step
 
 1. **Create Neon PostgreSQL**
+
    - New Project → `recipe-manager` → Free tier
    - Copy **Pooled Connection String** (starts with `postgresql://`)
-
 2. **Create Render Redis**
+
    - Dashboard → New → Redis → `recipe-manager-redis` → Free
    - Copy **Internal Connection String** (extract host, port 6379)
-
 3. **Deploy Web Service via Blueprint**
+
    - Render Dashboard → New → Blueprint → Connect repo
    - Blueprint name: `recipe-manager-prod`
    - Applies `render.yaml` (web service only)
-
 4. **Set Environment Variables** (Web Service → Environment)
 
-| Variable | Value |
-|----------|-------|
-| `SPRING_PROFILES_ACTIVE` | `prod` |
-| `SPRING_DATASOURCE_URL` | *Neon pooled connection string* |
-| `SPRING_DATASOURCE_USERNAME` | *From Neon connection string* |
-| `SPRING_DATASOURCE_PASSWORD` | *From Neon connection string* |
-| `JWT_SECRET` | `openssl rand -base64 32` |
-| `REDIS_HOST` | *Render Redis host* |
-| `REDIS_PORT` | `6379` |
+| Variable                       | Value                             |
+| ------------------------------ | --------------------------------- |
+| `SPRING_PROFILES_ACTIVE`     | `prod`                          |
+| `SPRING_DATASOURCE_URL`      | *Neon pooled connection string* |
+| `SPRING_DATASOURCE_USERNAME` | *From Neon connection string*   |
+| `SPRING_DATASOURCE_PASSWORD` | *From Neon connection string*   |
+| `JWT_SECRET`                 | `openssl rand -base64 32`       |
+| `REDIS_HOST`                 | *Render Redis host*             |
+| `REDIS_PORT`                 | `6379`                          |
 
 5. **Save → Auto-deploys**
 
-Health check: `GET https://recipe-manager-jh73.onrender.com/api/v1/health`  
+Health check: `GET https://recipe-manager-jh73.onrender.com/api/v1/health`
 Swagger: `https://recipe-manager-jh73.onrender.com/swagger-ui/index.html`
 
 ### Local Development (unchanged)
+
 Use Docker Compose with local PostgreSQL/Redis — see [Quick Start](#quick-start).
 
 ## Recent Updates
 
-### Security & Configuration Improvements (2024)
+### Security & Configuration Improvements
+
 - **PostgreSQL Migration**: Migrated from MongoDB to PostgreSQL 18 for better ACID compliance and production compatibility
 - **Profile-based Configuration**: Implemented environment-specific configurations (`dev`, `prod`) with secure secret management
 - **Spring Boot Actuator**: Added health monitoring endpoints at `/api/v1/health` for production observability
@@ -257,6 +261,7 @@ Use Docker Compose with local PostgreSQL/Redis — see [Quick Start](#quick-star
 - **User Profile Management**: Added endpoints for profile updates and password changes
 
 ### Feature Enhancements
+
 - **Enhanced Recipe Fields**: Added cookingTime, servings, difficulty, cuisine, instructions, nutritionInfo fields
 - **Recipe Tags System**: Implemented flexible tagging system for better recipe organization
 - **Recipe Ratings Infrastructure**: Created RecipeRating entity and repository for future rating system
@@ -276,6 +281,7 @@ Use Docker Compose with local PostgreSQL/Redis — see [Quick Start](#quick-star
 - **Integration Tests**: Added comprehensive integration tests with H2 in-memory database
 
 ### Infrastructure Updates
+
 - **Render Deployment**: Configured for Render cloud deployment with Neon PostgreSQL and Render Redis
 - **CI/CD Pipeline**: Enhanced GitHub Actions workflow with Maven dependency caching and test artifact uploads
 - **Docker Optimization**: Improved Dockerfile for production builds and proper port configuration
@@ -316,7 +322,7 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-**Original College Project** 
+**Original College Project**
 James Nguyen  • Toan Tran
 
-**Post-Graduation Maintenance** — All updates after May 15, 2024 by Toan Tran for skill development.
+**Post-Graduation Maintenance** — All updates after May 15, 2026 by Toan Tran for skill development.
