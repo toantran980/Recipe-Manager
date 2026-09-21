@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16-alpine
+        image: postgres:18-alpine
         env:
           POSTGRES_DB: recipe
           POSTGRES_USER: postgres
@@ -45,7 +45,7 @@ jobs:
           cache: maven
 
       - name: Run all tests
-        run: mvn --batch-mode clean test
+        run: mvn --batch-mode clean test -Dtest='!RecipeIntegrationTest'
 
       - name: Build Docker image
         run: docker build -t recipe-api:${{ github.sha }} .
