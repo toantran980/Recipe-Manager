@@ -28,7 +28,7 @@ public class RecipeService {
     @Autowired
     private RecipeRepository recipeRepo;
 
-    @Autowired
+    @Autowired(required = false)
     private ObjectMapper objectMapper;
 
     // CREATE | creates recipe
@@ -203,6 +203,9 @@ public class RecipeService {
 
     public String exportRecipe(Long recipeId, Long userId) {
         Recipe recipe = getOneRecipe(recipeId, userId);
+        if (objectMapper == null) {
+            throw new IllegalStateException("ObjectMapper not available for export");
+        }
         try {
             return objectMapper.writeValueAsString(recipe);
         } catch (IOException e) {
@@ -211,6 +214,9 @@ public class RecipeService {
     }
 
     public Recipe importRecipe(String recipeJson, Long userId) {
+        if (objectMapper == null) {
+            throw new IllegalStateException("ObjectMapper not available for import");
+        }
         try {
             Recipe recipe = objectMapper.readValue(recipeJson, Recipe.class);
             recipe.setId(null); // Reset ID for new record

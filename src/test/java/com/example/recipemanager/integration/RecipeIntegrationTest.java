@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-@Disabled("Integration tests require full Spring context with valid JWT secret")
+@Disabled("Temporarily disabled during CI fix")
 class RecipeIntegrationTest {
 
     @Autowired
