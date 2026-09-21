@@ -38,7 +38,7 @@ class RecipeControllerTest {
         when(recipeService.createRecipe(any(Recipe.class))).thenReturn(recipe);
 
         ResponseEntity<Recipe> response = recipeController.createRecipe(
-                new com.example.recipemanager.dto.RecipeRequest("Soup", "A test recipe", List.of("salt"), 10, "Dinner"),
+                new com.example.recipemanager.dto.RecipeRequest("Soup", "A test recipe", List.of("salt"), 10, null, null, null, null, null, null, "Dinner", null),
                 new com.example.recipemanager.security.AuthUser(1L, "test@example.com")
         );
 

@@ -12,8 +12,7 @@ public record RecipeRequest(
         @Size(max = 100, message = "Title must be 100 characters or fewer")
         String title,
 
-        @NotBlank(message = "Description is required")
-        @Size(max = 1000, message = "Description must be 1000 characters or fewer")
+        @Size(max = 2000, message = "Description must be 2000 characters or fewer")
         String description,
 
         @NotEmpty(message = "At least one ingredient is required")
@@ -22,8 +21,25 @@ public record RecipeRequest(
         @PositiveOrZero(message = "Prep time must be 0 or greater")
         int prepTime,
 
-        @NotBlank(message = "Category is required")
+        Integer cookingTime,
+
+        Integer servings,
+
+        @Size(max = 20, message = "Difficulty must be 20 characters or fewer")
+        String difficulty,
+
+        @Size(max = 50, message = "Cuisine must be 50 characters or fewer")
+        String cuisine,
+
+        @Size(max = 5000, message = "Instructions must be 5000 characters or fewer")
+        String instructions,
+
+        @Size(max = 1000, message = "Nutrition info must be 1000 characters or fewer")
+        String nutritionInfo,
+
         @Size(max = 50, message = "Category must be 50 characters or fewer")
-        String category
+        String category,
+
+        List<String> tags
 ) {
 }

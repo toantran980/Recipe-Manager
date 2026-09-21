@@ -104,7 +104,7 @@ class RecipeServiceTest {
 
         when(recipeRepository.findByUserId(1L)).thenReturn(List.of(recipe));
 
-        List<Recipe> recipes = recipeService.getAllRecipes(1L, "stir", "Dinner", 30, "soy", 0, 10);
+        List<Recipe> recipes = recipeService.getAllRecipes(1L, "stir", "Dinner", 30, "soy", null, null, 0, 10);
 
         assertEquals(1, recipes.size());
         assertEquals("Vegetable Stir Fry", recipes.get(0).getTitle());
@@ -124,7 +124,7 @@ class RecipeServiceTest {
 
         when(recipeRepository.findByUserId(1L)).thenReturn(List.of(first, second));
 
-        List<Recipe> recipes = recipeService.getAllRecipes(1L, null, null, null, null, 1, 1);
+        List<Recipe> recipes = recipeService.getAllRecipes(1L, null, null, null, null, null, null, 1, 1);
 
         assertEquals(1, recipes.size());
         assertEquals("Second Recipe", recipes.get(0).getTitle());

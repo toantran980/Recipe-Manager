@@ -55,7 +55,14 @@ public class LatencyBenchmark {
                 "Test recipe for latency benchmarking",
                 List.of("item1", "item2"),
                 15,
-                "Benchmark"
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "Benchmark",
+                null
         );
     }
 
@@ -90,20 +97,20 @@ public class LatencyBenchmark {
 
         System.out.println(">> Running benchmarks (" + iterations + " iterations each)...\n");
 
-        bench.benchmarkEndpoint("Health Check",       "GET",  "/api/health",                    null,   null);
-        bench.benchmarkEndpoint("Login",              "POST", "/api/auth/login",                null,   new LoginRequest(testEmail, testPassword));
+        bench.benchmarkEndpoint("Health Check",       "GET",  "/api/v1/health",                    null,   null);
+        bench.benchmarkEndpoint("Login",              "POST", "/api/v1/auth/login",                null,   new LoginRequest(testEmail, testPassword));
 
         if (token != null) {
-            bench.benchmarkEndpoint("Create Recipe",    "POST", "/api/recipes",                   token,  testRecipe);
-            bench.benchmarkEndpoint("Get All Recipes",  "GET",  "/api/recipes",                   token,  null);
+            bench.benchmarkEndpoint("Create Recipe",    "POST", "/api/v1/recipes",                   token,  testRecipe);
+            bench.benchmarkEndpoint("Get All Recipes",  "GET",  "/api/v1/recipes",                   token,  null);
 
             if (recipeId != null) {
-                bench.benchmarkEndpoint("Get One Recipe",   "GET",  "/api/recipes/" + recipeId,      token,  null);
-                bench.benchmarkEndpoint("Update Recipe",    "PUT",  "/api/recipes/" + recipeId,      token,  testRecipe);
-                bench.benchmarkEndpoint("Delete Recipe",    "DELETE","/api/recipes/" + recipeId,      token,  null);
+                bench.benchmarkEndpoint("Get One Recipe",   "GET",  "/api/v1/recipes/" + recipeId,      token,  null);
+                bench.benchmarkEndpoint("Update Recipe",    "PUT",  "/api/v1/recipes/" + recipeId,      token,  testRecipe);
+                bench.benchmarkEndpoint("Delete Recipe",    "DELETE","/api/v1/recipes/" + recipeId,      token,  null);
             }
 
-            bench.benchmarkEndpoint("Unauthorized",      "GET",  "/api/recipes",                   "bad_token", null);
+            bench.benchmarkEndpoint("Unauthorized",      "GET",  "/api/v1/recipes",                   "bad_token", null);
         }
 
         bench.printSummary();
@@ -183,7 +190,7 @@ public class LatencyBenchmark {
     private boolean isServerUp() {
         try {
             HttpRequest req = HttpRequest.newBuilder()
-                    .uri(URI.create(baseUrl + "/api/health"))
+                    .uri(URI.create(baseUrl + "/api/v1/health"))
                     .GET()
                     .timeout(Duration.ofSeconds(5))
                     .build();
@@ -197,7 +204,7 @@ public class LatencyBenchmark {
     private String registerAndLogin() throws Exception {
         RegisterRequest reg = new RegisterRequest("bench_user", testEmail, testPassword);
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + "/api/auth/register"))
+                .uri(URI.create(baseUrl + "/api/v1/auth/register"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(MAPPER.writeValueAsString(reg)))
                 .timeout(Duration.ofSeconds(5))
@@ -211,7 +218,7 @@ public class LatencyBenchmark {
 
         LoginRequest login = new LoginRequest(testEmail, testPassword);
         req = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + "/api/auth/login"))
+                .uri(URI.create(baseUrl + "/api/v1/auth/login"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(MAPPER.writeValueAsString(login)))
                 .timeout(Duration.ofSeconds(5))
@@ -227,7 +234,7 @@ public class LatencyBenchmark {
 
     private String createTestRecipe(String token) throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create(baseUrl + "/api/recipes"))
+                .uri(URI.create(baseUrl + "/api/v1/recipes"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + token)
                 .POST(HttpRequest.BodyPublishers.ofString(MAPPER.writeValueAsString(testRecipe)))

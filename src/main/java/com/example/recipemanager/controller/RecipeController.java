@@ -14,10 +14,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/recipes")
+@RequestMapping("/api/v1/recipes")
 @Tag(name = "Recipes", description = "Recipe management endpoints")
 public class RecipeController {
     @Autowired
@@ -35,14 +36,21 @@ public class RecipeController {
         recipe.setDescription(request.description());
         recipe.setIngredients(request.ingredients());
         recipe.setPrepTime(request.prepTime());
+        recipe.setCookingTime(request.cookingTime());
+        recipe.setServings(request.servings());
+        recipe.setDifficulty(request.difficulty());
+        recipe.setCuisine(request.cuisine());
+        recipe.setInstructions(request.instructions());
+        recipe.setNutritionInfo(request.nutritionInfo());
         recipe.setCategory(request.category());
+        recipe.setTags(request.tags() != null ? request.tags() : new ArrayList<>());
         recipe.setUserId(authUser.getUserId());
         Recipe newRecipe = recipeService.createRecipe(recipe);
         return new ResponseEntity<>(newRecipe, HttpStatus.CREATED); // 201 CREATED
     }
 
     // READ ALL endpoint - Filtered by authenticated user
-    // GET /api/recipes?search=...&category=...&maxPrepTime=...&ingredient=...&page=...&size=...
+    // GET /api/recipes?search=...&category=...&maxPrepTime=...&ingredient=...&sortBy=...&sortDirection=...&page=...&size=...
     @Operation(summary = "List recipes for the authenticated user")
     @GetMapping
     public ResponseEntity<List<Recipe>> getAllRecipes(
@@ -51,9 +59,11 @@ public class RecipeController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Integer maxPrepTime,
             @RequestParam(required = false) String ingredient,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortDirection,
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "20") Integer size) {
-        List<Recipe> allRecipes = recipeService.getAllRecipes(authUser.getUserId(), search, category, maxPrepTime, ingredient, page, size);
+        List<Recipe> allRecipes = recipeService.getAllRecipes(authUser.getUserId(), search, category, maxPrepTime, ingredient, sortBy, sortDirection, page, size);
         return ResponseEntity.ok(allRecipes);   // 200 OK
     }
 
@@ -81,7 +91,14 @@ public class RecipeController {
         recipe.setDescription(request.description());
         recipe.setIngredients(request.ingredients());
         recipe.setPrepTime(request.prepTime());
+        recipe.setCookingTime(request.cookingTime());
+        recipe.setServings(request.servings());
+        recipe.setDifficulty(request.difficulty());
+        recipe.setCuisine(request.cuisine());
+        recipe.setInstructions(request.instructions());
+        recipe.setNutritionInfo(request.nutritionInfo());
         recipe.setCategory(request.category());
+        recipe.setTags(request.tags() != null ? request.tags() : new ArrayList<>());
         Recipe updatedRecipe = recipeService.updateRecipe(recipeId, authUser.getUserId(), recipe);
         return ResponseEntity.ok(updatedRecipe);    // 200 OK
     }
@@ -105,5 +122,43 @@ public class RecipeController {
             @AuthenticationPrincipal AuthUser authUser) {
         Recipe updatedRecipe = recipeService.uploadRecipeImage(recipeId, authUser.getUserId(), file);
         return ResponseEntity.ok(updatedRecipe);
+    }
+
+    @Operation(summary = "Duplicate a recipe")
+    @PostMapping("/{id}/duplicate")
+    public ResponseEntity<Recipe> duplicateRecipe(
+            @PathVariable("id") Long recipeId,
+            @AuthenticationPrincipal AuthUser authUser) {
+        Recipe duplicated = recipeService.duplicateRecipe(recipeId, authUser.getUserId());
+        return ResponseEntity.ok(duplicated);
+    }
+
+    @Operation(summary = "Bulk delete recipes")
+    @DeleteMapping("/bulk")
+    public ResponseEntity<Void> bulkDeleteRecipes(
+            @RequestBody List<Long> recipeIds,
+            @AuthenticationPrincipal AuthUser authUser) {
+        recipeService.bulkDeleteRecipes(recipeIds, authUser.getUserId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Export recipe as JSON")
+    @GetMapping("/{id}/export")
+    public ResponseEntity<String> exportRecipe(
+            @PathVariable("id") Long recipeId,
+            @AuthenticationPrincipal AuthUser authUser) {
+        String exported = recipeService.exportRecipe(recipeId, authUser.getUserId());
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=recipe_" + recipeId + ".json")
+                .body(exported);
+    }
+
+    @Operation(summary = "Import recipe from JSON")
+    @PostMapping("/import")
+    public ResponseEntity<Recipe> importRecipe(
+            @RequestBody String recipeJson,
+            @AuthenticationPrincipal AuthUser authUser) {
+        Recipe imported = recipeService.importRecipe(recipeJson, authUser.getUserId());
+        return ResponseEntity.ok(imported);
     }
 }

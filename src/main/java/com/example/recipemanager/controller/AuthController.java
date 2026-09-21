@@ -1,7 +1,9 @@
 package com.example.recipemanager.controller;
 
+import com.example.recipemanager.dto.ForgotPasswordRequest;
 import com.example.recipemanager.dto.LoginRequest;
 import com.example.recipemanager.dto.RegisterRequest;
+import com.example.recipemanager.dto.ResetPasswordRequest;
 import com.example.recipemanager.entity.User;
 import com.example.recipemanager.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,10 +17,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Register, login, and logout endpoints")
 public class AuthController {
@@ -53,6 +56,30 @@ public class AuthController {
             authService.logout(token);
         }
         return ResponseEntity.noContent().build();
+    }
+
+    // POST /api/auth/forgot-password
+    @Operation(summary = "Request password reset")
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request.email());
+        return ResponseEntity.ok("Password reset email sent");
+    }
+
+    // POST /api/auth/reset-password
+    @Operation(summary = "Reset password with token")
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request.token(), request.newPassword());
+        return ResponseEntity.ok("Password reset successful");
+    }
+
+    // POST /api/auth/verify-email
+    @Operation(summary = "Verify email with token")
+    @PostMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestParam String token) {
+        authService.verifyEmail(token);
+        return ResponseEntity.ok("Email verified successfully");
     }
 
     public record TokenResponse(String token) {}
