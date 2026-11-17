@@ -97,7 +97,7 @@ cp .env.example .env
 | Variable                       | Description                | Default                                         |
 | ------------------------------ | -------------------------- | ----------------------------------------------- |
 | `SPRING_PROFILES_ACTIVE`     | `dev` or `prod`        | `dev`                                         |
-| `SPRING_DATASOURCE_URL`      | PostgreSQL JDBC URL        | `jdbc:postgresql://localhost:5432/recipe`     |
+| `SPRING_DATASOURCE_URL`      | PostgreSQL URL (`postgresql://` or `jdbc:postgresql://`) | `jdbc:postgresql://localhost:5432/recipe` |
 | `SPRING_DATASOURCE_USERNAME` | DB username                | `postgres`                                    |
 | `SPRING_DATASOURCE_PASSWORD` | DB password                | `postgres`                                    |
 | `SPRING_DATA_REDIS_HOST`     | Redis host                 | `localhost`                                   |
@@ -214,6 +214,7 @@ openssl rand -base64 32
 
    - New Project → `recipe-manager` → Free tier
    - Copy **Pooled Connection String** (starts with `postgresql://`)
+   - The app accepts both `postgresql://...` and `jdbc:postgresql://...` values, so no manual conversion is required
 2. **Create Render Redis**
 
    - Dashboard → New → Redis → `recipe-manager-redis` → Free
@@ -228,7 +229,7 @@ openssl rand -base64 32
 | Variable                       | Value                             |
 | ------------------------------ | --------------------------------- |
 | `SPRING_PROFILES_ACTIVE`     | `prod`                          |
-| `SPRING_DATASOURCE_URL`      | *Neon pooled connection string* |
+| `SPRING_DATASOURCE_URL`      | *Neon pooled connection string (`postgresql://...` is accepted)* |
 | `SPRING_DATASOURCE_USERNAME` | *From Neon connection string*   |
 | `SPRING_DATASOURCE_PASSWORD` | *From Neon connection string*   |
 | `JWT_SECRET`                 | `openssl rand -base64 32`       |
