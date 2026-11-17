@@ -214,7 +214,7 @@ openssl rand -base64 32
 
    - New Project → `recipe-manager` → Free tier
    - Copy **Pooled Connection String** (starts with `postgresql://`)
-   - The app accepts both `postgresql://...` and `jdbc:postgresql://...` values, so no manual conversion is required
+   - The app accepts both `postgresql://...` and `jdbc:postgresql://...` values, removes embedded credentials from the JDBC URL, and uses them as datasource credentials when the separate username/password variables are not set
 2. **Create Render Redis**
 
    - Dashboard → New → Redis → `recipe-manager-redis` → Free

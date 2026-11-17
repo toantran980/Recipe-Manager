@@ -1,6 +1,8 @@
 package com.example.recipemanager.config;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
@@ -17,15 +19,29 @@ public class DatabaseUrlEnvironmentPostProcessor implements EnvironmentPostProce
             sourceUrl = environment.getProperty("DATABASE_URL");
         }
 
-        String normalizedUrl = DatabaseUrlNormalizer.normalizeJdbcUrl(sourceUrl);
-        if (normalizedUrl == null || normalizedUrl.equals(sourceUrl)) {
+        DatabaseUrlNormalizer.NormalizedJdbcUrl normalized = DatabaseUrlNormalizer.normalize(sourceUrl);
+        Map<String, Object> properties = new HashMap<>();
+        if (!Objects.equals(normalized.jdbcUrl(), sourceUrl)) {
+            properties.put("spring.datasource.url", normalized.jdbcUrl());
+        }
+        if (normalized.username() != null && isMissing(environment.getProperty("SPRING_DATASOURCE_USERNAME"))) {
+            properties.put("spring.datasource.username", normalized.username());
+        }
+        if (normalized.password() != null && isMissing(environment.getProperty("SPRING_DATASOURCE_PASSWORD"))) {
+            properties.put("spring.datasource.password", normalized.password());
+        }
+        if (properties.isEmpty()) {
             return;
         }
 
         MutablePropertySources propertySources = environment.getPropertySources();
         propertySources.addFirst(new MapPropertySource(
                 "database-url-normalizer",
-                Map.of("spring.datasource.url", normalizedUrl)
+                properties
         ));
+    }
+
+    private boolean isMissing(String value) {
+        return value == null || value.isBlank();
     }
 }
